@@ -1,3 +1,14 @@
-@import './fonts.css';
-@import './tailwind.css';
-@import './theme.css';
+@import "./tailwind.css";
+
+/* Base styles for dark app */
+html {
+  font-size: 16px;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #0f172a;
+  color: #f8fafc;
+  font-family: system-ui, -apple-system, sans-serif;
+}
