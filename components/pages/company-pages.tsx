@@ -2,7 +2,7 @@
 
 import React from "react"
 
-import { ArrowLeft, Mail, MessageCircle, Home, Heart, Users, Shield, Target } from "lucide-react";
+import { ArrowLeft, Mail, Handshake, Home, Heart, Users, Shield, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -37,17 +37,17 @@ export function AboutPage({ onBack, onNavigate }: PageProps) {
         <div className="prose prose-invert max-w-none">
           <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-8">
             <p className="text-slate-300 text-lg leading-relaxed">
-              FirstHome was created by people who have been through the confusing, stressful, 
-              and often overwhelming process of buying their first home. We know how it feels 
-              to be bombarded with jargon, unsure of what comes next, and worried about making 
+              I created FirstHome after going through the confusing, stressful, and often 
+              overwhelming process of buying my first home. I know how it feels to be 
+              bombarded with jargon, unsure of what comes next, and worried about making 
               expensive mistakes.
             </p>
           </div>
 
           <h2 className="text-xl font-semibold text-white mb-4">Our Mission</h2>
           <p className="text-slate-300 mb-8 leading-relaxed">
-            We believe everyone deserves to understand the homebuying process without needing 
-            a law degree or a finance background. Our mission is simple: to demystify buying 
+            I believe everyone deserves to understand the homebuying process without needing 
+            a law degree or a finance background. My mission is simple: to demystify buying 
             your first home and give you the confidence to navigate every step of the journey.
           </p>
 
@@ -58,7 +58,7 @@ export function AboutPage({ onBack, onNavigate }: PageProps) {
               </div>
               <h3 className="text-white font-semibold mb-2">Plain English</h3>
               <p className="text-slate-400 text-sm leading-relaxed">
-                No confusing jargon or industry speak. We explain everything in terms 
+                No confusing jargon or industry speak. I explain everything in terms 
                 anyone can understand.
               </p>
             </div>
@@ -68,7 +68,7 @@ export function AboutPage({ onBack, onNavigate }: PageProps) {
               </div>
               <h3 className="text-white font-semibold mb-2">Independent Advice</h3>
               <p className="text-slate-400 text-sm leading-relaxed">
-                We're not trying to sell you anything. Our guidance is free, impartial, 
+                I&apos;m not trying to sell you anything. The guidance here is free, impartial, 
                 and always in your best interest.
               </p>
             </div>
@@ -78,8 +78,8 @@ export function AboutPage({ onBack, onNavigate }: PageProps) {
               </div>
               <h3 className="text-white font-semibold mb-2">By First-Time Buyers</h3>
               <p className="text-slate-400 text-sm leading-relaxed">
-                We've been in your shoes. Our team has first-hand experience of the 
-                challenges you're facing.
+                I&apos;ve been in your shoes. I have first-hand experience of the 
+                challenges you&apos;re facing.
               </p>
             </div>
             <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
@@ -88,22 +88,21 @@ export function AboutPage({ onBack, onNavigate }: PageProps) {
               </div>
               <h3 className="text-white font-semibold mb-2">Always Free</h3>
               <p className="text-slate-400 text-sm leading-relaxed">
-                FirstHome will always be free to use. We believe access to good 
-                information shouldn't cost extra.
+                FirstHome will always be free to use. I believe access to good 
+                information shouldn&apos;t cost extra.
               </p>
             </div>
           </div>
 
           <h2 className="text-xl font-semibold text-white mb-4">Our Story</h2>
           <p className="text-slate-300 mb-4 leading-relaxed">
-            FirstHome started in 2024 when our founder spent 6 months buying their first 
-            flat and documented everything they learned along the way. What started as 
-            personal notes became a resource for friends, and eventually grew into this 
-            platform.
+            FirstHome started in 2024 when I spent 6 months buying my first flat and 
+            documented everything I learned along the way. What started as personal notes 
+            became a resource for friends, and eventually grew into this platform.
           </p>
           <p className="text-slate-300 leading-relaxed">
-            Today, FirstHome helps thousands of first-time buyers across the UK navigate 
-            their way to homeownership with confidence.
+            Today, FirstHome helps first-time buyers across the UK navigate their way to 
+            homeownership with confidence.
           </p>
         </div>
       </div>
@@ -161,15 +160,14 @@ export function ContactPage({ onBack, onNavigate }: PageProps) {
             <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 bg-teal-500/20 rounded-lg flex items-center justify-center">
-                  <MessageCircle className="w-5 h-5 text-teal-400" />
+                  <Handshake className="w-5 h-5 text-teal-400" />
                 </div>
                 <div>
-                  <h3 className="text-white font-semibold">Social Media</h3>
-                  <p className="text-slate-400 text-sm">@firsthomeuk</p>
+                  <h3 className="text-white font-semibold">Partnerships</h3>
                 </div>
               </div>
               <p className="text-slate-400 text-sm leading-relaxed">
-                Follow us on social media for tips, news, and updates.
+                Interested in working with FirstHome? If you&apos;re a mortgage comparison site, broker, solicitor, or related service and would like to explore a potential partnership, we&apos;d love to hear from you.
               </p>
             </div>
           </div>

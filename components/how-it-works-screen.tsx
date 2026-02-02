@@ -16,6 +16,9 @@ import { Footer } from "@/components/footer";
 interface HowItWorksScreenProps {
   onBegin: () => void;
   onBack?: () => void;
+  onOpenLogin?: () => void;
+  userEmail?: string | null;
+  onNavigate?: (screen: string) => void;
 }
 
 const FEATURE_CARDS = [
@@ -100,22 +103,37 @@ function ChecklistPreviewMini() {
   );
 }
 
-export function HowItWorksScreen({ onBegin, onBack }: HowItWorksScreenProps) {
+export function HowItWorksScreen({ onBegin, onBack, onOpenLogin, userEmail, onNavigate }: HowItWorksScreenProps) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white flex flex-col">
-      {onBack && (
-        <header className="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700/50 sticky top-0 z-20 shrink-0">
-          <div className="max-w-4xl mx-auto px-6 py-4">
-            <button
-              onClick={onBack}
-              className="p-2 hover:bg-slate-700/50 rounded-full transition-colors"
-              aria-label="Back to home"
-            >
-              <ArrowLeft className="w-6 h-6 text-gray-200" />
-            </button>
+      <header className="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700/50 sticky top-0 z-20 shrink-0">
+        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div>
+            {onBack && (
+              <button
+                onClick={onBack}
+                className="p-2 -ml-2 hover:bg-slate-700/50 rounded-full transition-colors"
+                aria-label="Back to home"
+              >
+                <ArrowLeft className="w-6 h-6 text-gray-200" />
+              </button>
+            )}
           </div>
-        </header>
-      )}
+          {onOpenLogin && (
+            userEmail ? (
+              <span className="text-sm text-gray-300">My journey</span>
+            ) : (
+              <button
+                type="button"
+                onClick={onOpenLogin}
+                className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
+              >
+                Log in
+              </button>
+            )
+          )}
+        </div>
+      </header>
       <div className="flex-1 flex flex-col">
         {/* Header / Hero */}
         <section className="flex flex-col items-center text-center px-6 pt-12 pb-10">
@@ -183,7 +201,7 @@ export function HowItWorksScreen({ onBegin, onBack }: HowItWorksScreenProps) {
         </section>
       </div>
 
-      <Footer />
+      <Footer onNavigate={onNavigate} />
     </div>
   );
 }

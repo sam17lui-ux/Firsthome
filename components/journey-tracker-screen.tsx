@@ -108,12 +108,12 @@ interface JourneyTrackerScreenProps {
   onBack: () => void;
   onOpenChat: () => void;
   onNavigate?: (screen: string) => void;
-  onNavigateToSignup?: () => void;
+  onOpenLogin?: () => void;
+  onOpenCreateAccount?: () => void;
   userEmail?: string | null;
-  onLogin?: () => void;
 }
 
-export function JourneyTrackerScreen({ onBack, onOpenChat, onNavigate, onNavigateToSignup }: JourneyTrackerScreenProps) {
+export function JourneyTrackerScreen({ onBack, onOpenChat, onNavigate, onOpenLogin, onOpenCreateAccount, userEmail }: JourneyTrackerScreenProps) {
   const [stages, setStages] = useState<Stage[]>(() => getDefaultStages());
   const hasHydrated = useRef(false);
   const hasDismissedSignupThisSession = useRef(false);
@@ -253,10 +253,24 @@ export function JourneyTrackerScreen({ onBack, onOpenChat, onNavigate, onNavigat
       onClose={handleCloseSignupModal}
       onCreateAccount={() => {
         handleCloseSignupModal();
-        onNavigateToSignup?.();
+        onOpenCreateAccount?.();
       }}
       onContinueWithoutSaving={handleCloseSignupModal}
     />
+  );
+
+  const headerLoginButton = onOpenLogin && (
+    userEmail ? (
+      <span className="text-sm text-gray-300">My journey</span>
+    ) : (
+      <button
+        type="button"
+        onClick={onOpenLogin}
+        className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
+      >
+        Log in
+      </button>
+    )
   );
 
   if (selectedTask && content) {
@@ -270,6 +284,7 @@ export function JourneyTrackerScreen({ onBack, onOpenChat, onNavigate, onNavigat
             <p className="text-xs text-gray-400">Learn, then take action</p>
           </>
         }
+        headerRight={headerLoginButton}
       >
         <button
           onClick={() => toggleItemCompleted(selectedTask.stageId, selectedTask.item.id)}
@@ -424,14 +439,17 @@ export function JourneyTrackerScreen({ onBack, onOpenChat, onNavigate, onNavigat
           </>
         }
         headerRight={
-          <button
-            onClick={() => setShowStageAbout((b) => !b)}
-            className={LAYOUT.backBtn}
-            aria-expanded={showStageAbout}
-            aria-label="What is this stage about?"
-          >
-            <Info className="w-5 h-5 text-gray-400" />
-          </button>
+          <div className="flex items-center gap-2">
+            {headerLoginButton}
+            <button
+              onClick={() => setShowStageAbout((b) => !b)}
+              className={LAYOUT.backBtn}
+              aria-expanded={showStageAbout}
+              aria-label="What is this stage about?"
+            >
+              <Info className="w-5 h-5 text-gray-400" />
+            </button>
+          </div>
         }
         footer={
           <div className="fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-sm border-t border-slate-700/50 p-6 shrink-0">
@@ -536,6 +554,7 @@ export function JourneyTrackerScreen({ onBack, onOpenChat, onNavigate, onNavigat
           <p className="text-xs text-gray-400">Tap any stage to see your checklist</p>
         </>
       }
+      headerRight={headerLoginButton}
       footer={<Footer onNavigate={onNavigate} />}
       contentClassName="py-8 pb-12"
     >

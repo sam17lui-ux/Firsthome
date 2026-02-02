@@ -2,7 +2,7 @@
 
 import React from "react"
 
-import { ArrowLeft, Home, Search, FileText, ClipboardCheck, Truck, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Home, Search, FileText, ClipboardCheck, Truck, CheckCircle2, Handshake, Scale } from "lucide-react";
 import { Footer } from "@/components/footer";
 
 interface PageProps {
@@ -80,51 +80,492 @@ function GuideLayout({
 // =====================
 export function HouseHuntingGuide({ onBack, onNavigate }: PageProps) {
   return (
-    <GuideLayout
-      title="House Hunting Guide"
-      icon={Search}
-      intro="Finding the right home takes time and patience. This guide will help you search smarter, view effectively, and make confident offers."
-      onBack={onBack}
-      onNavigate={onNavigate}
-      sections={[
-        {
-          title: "Before You Start Searching",
-          content: "Get your finances in order first. Know your budget, have a mortgage in principle, and be clear on what you can realistically afford including all the extra costs. Create a list of must-haves vs nice-to-haves to help focus your search.",
-          tips: [
-            "Set up alerts on Rightmove, Zoopla, and OnTheMarket",
-            "Register with local estate agents in your target areas",
-            "Be realistic about your budget - leave room for unexpected costs",
-          ],
-        },
-        {
-          title: "Researching Areas",
-          content: "Don't just fall in love with a house - research the area thoroughly. Visit at different times of day and week. Check transport links, local amenities, school catchments (even if you don't have children - it affects resale value), and crime statistics.",
-          tips: [
-            "Walk around the neighbourhood in the evening",
-            "Check flood risk on the Environment Agency website",
-            "Look at sold prices for similar properties in the area",
-          ],
-        },
-        {
-          title: "Viewing Properties",
-          content: "Try to view at least 10-15 properties before making an offer. Take photos, make notes, and don't be afraid to ask questions. Look beyond the staging - check windows, electrics, signs of damp, and the condition of the roof from outside.",
-          tips: [
-            "Bring a checklist to every viewing",
-            "Ask why the seller is moving and how long it's been on the market",
-            "Request a second viewing for any property you're serious about",
-          ],
-        },
-        {
-          title: "Making an Offer",
-          content: "Most properties sell below asking price, so don't be afraid to negotiate. Research what similar properties have sold for recently. Consider your position - being chain-free as a first-time buyer is attractive to sellers and can strengthen your offer.",
-          tips: [
-            "Start below your maximum to leave room for negotiation",
-            "Put your offer in writing and state your buying position",
-            "Be prepared to walk away if the price doesn't work for you",
-          ],
-        },
-      ]}
-    />
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
+      <div className="px-6 py-4">
+        <button
+          onClick={onBack}
+          className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span className="text-sm">Back</span>
+        </button>
+      </div>
+
+      <div className="max-w-3xl mx-auto px-6 pb-16">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-12 h-12 bg-teal-500/20 rounded-xl flex items-center justify-center">
+            <Search className="w-6 h-6 text-teal-400" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-white">House hunting</h1>
+            <p className="text-slate-400 mt-1">How to find the right home — without feeling overwhelmed</p>
+          </div>
+        </div>
+
+        <p className="text-slate-300 text-lg leading-relaxed mb-6">
+          House hunting is often the most emotional part of buying a home.
+          This guide helps you focus on what really matters, what you can ignore, and how to stay realistic — especially if this is your first time.
+        </p>
+
+        <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-5 mb-8">
+          <p className="text-slate-300 leading-relaxed">
+            <span className="font-medium text-white">Feeling unsure is completely normal.</span>
+            <br />
+            Most first-time buyers only start to feel confident after several viewings.
+          </p>
+        </div>
+
+        {/* Section 1 */}
+        <section className="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-6">
+          <h2 className="text-xl font-semibold text-white mb-4">Know what you can afford (before you fall in love)</h2>
+          <p className="text-slate-300 leading-relaxed mb-4">
+            Before you book viewings, it's important to understand what you can realistically afford — not just the asking price.
+          </p>
+          <p className="text-slate-300 leading-relaxed mb-4">
+            The price on the listing isn't the full picture. Buying a home comes with ongoing monthly costs too.
+          </p>
+          <ul className="space-y-2 mb-4">
+            <li className="flex items-start gap-2 text-slate-300">
+              <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
+              <span>Get a mortgage in principle to understand your likely budget</span>
+            </li>
+            <li className="flex items-start gap-2 text-slate-300">
+              <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
+              <span>Think about your deposit, monthly mortgage payments, and day-to-day living costs</span>
+            </li>
+            <li className="flex items-start gap-2 text-slate-300">
+              <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
+              <span>Factor in costs beyond the mortgage, such as: Council tax, Utilities, Maintenance and repairs</span>
+            </li>
+          </ul>
+          <div className="bg-teal-500/10 border border-teal-500/30 rounded-lg p-4">
+            <p className="text-slate-300 text-sm"><span className="font-medium text-teal-400">Helper note:</span> Think of this as setting guardrails. It helps you avoid wasting time on homes that stretch you too far.</p>
+          </div>
+        </section>
+
+        {/* Section 2 */}
+        <section className="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-6">
+          <h2 className="text-xl font-semibold text-white mb-4">Must-haves vs nice-to-haves</h2>
+          <p className="text-slate-300 leading-relaxed mb-4">
+            It's easy to want everything — but very few first homes tick every box.
+          </p>
+          <div className="grid sm:grid-cols-2 gap-4 mb-4">
+            <div>
+              <h3 className="text-sm font-medium text-teal-400 mb-2">Must-haves</h3>
+              <ul className="space-y-1 text-slate-300 text-sm">
+                <li>• Works for your daily life (location, size, layout)</li>
+                <li>• Affordable long-term</li>
+                <li>• Suitable for your plans over the next few years</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-sm font-medium text-teal-400 mb-2">Nice-to-haves</h3>
+              <ul className="space-y-1 text-slate-300 text-sm">
+                <li>• Big garden</li>
+                <li>• Brand-new kitchen</li>
+                <li>• Home office</li>
+              </ul>
+            </div>
+          </div>
+          <div className="bg-teal-500/10 border border-teal-500/30 rounded-lg p-4">
+            <p className="text-slate-300 text-sm"><span className="font-medium text-teal-400">Tip:</span> You can often change a kitchen later — you can't change the location.</p>
+          </div>
+        </section>
+
+        {/* Section 3 */}
+        <section className="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-6">
+          <h2 className="text-xl font-semibold text-white mb-4">Viewing properties</h2>
+          <p className="text-slate-300 leading-relaxed mb-4">
+            Viewing homes is exciting — but first viewings are rarely "the one".
+            Take your time and try to stay objective.
+          </p>
+          <div className="space-y-4 mb-4">
+            <div>
+              <h3 className="text-sm font-medium text-teal-400 mb-2">Go prepared</h3>
+              <ul className="space-y-1 text-slate-300 text-sm">
+                <li>• Ask about recent repairs or upgrades</li>
+                <li>• Check the age of key systems (like the boiler or electrics)</li>
+                <li>• Ask about the neighbourhood, parking, and nearby developments</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-sm font-medium text-teal-400 mb-2">Watch out for red flags</h3>
+              <ul className="space-y-1 text-slate-300 text-sm">
+                <li>• Damp smells or visible mould</li>
+                <li>• Large cracks in walls or ceilings</li>
+                <li>• Fresh paint or furniture hiding problem areas</li>
+              </ul>
+            </div>
+          </div>
+          <div className="bg-teal-500/10 border border-teal-500/30 rounded-lg p-4">
+            <p className="text-slate-300 text-sm"><span className="font-medium text-teal-400">Note:</span> If something feels rushed or brushed off, it's okay to walk away.</p>
+          </div>
+        </section>
+
+        {/* Section 4 */}
+        <section className="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-6">
+          <h2 className="text-xl font-semibold text-white mb-4">Making comparisons (this really helps later)</h2>
+          <p className="text-slate-300 leading-relaxed mb-4">
+            After a few viewings, homes can start to blur together.
+          </p>
+          <ul className="space-y-2 mb-4">
+            <li className="flex items-start gap-2 text-slate-300">
+              <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
+              <span>Make short notes immediately after each viewing</span>
+            </li>
+            <li className="flex items-start gap-2 text-slate-300">
+              <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
+              <span>Compare homes based on facts, not first impressions</span>
+            </li>
+            <li className="flex items-start gap-2 text-slate-300">
+              <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
+              <span>Revisit listings later — they often look different once emotions settle</span>
+            </li>
+          </ul>
+          <div className="bg-teal-500/10 border border-teal-500/30 rounded-lg p-4">
+            <p className="text-slate-300 text-sm"><span className="font-medium text-teal-400">Helper note:</span> Many buyers only realise what actually matters after comparing a few homes side by side.</p>
+          </div>
+        </section>
+
+        {/* Optional Section */}
+        <section className="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-8">
+          <h2 className="text-xl font-semibold text-white mb-4">Market reality check</h2>
+          <p className="text-slate-300 leading-relaxed mb-4">
+            In busy areas, you may:
+          </p>
+          <ul className="list-disc list-inside text-slate-300 space-y-1 mb-4">
+            <li>Miss out on homes you like</li>
+            <li>Need to view quickly</li>
+            <li>Compete with other buyers</li>
+          </ul>
+          <p className="text-slate-300 leading-relaxed mb-4">
+            This is frustrating — but normal.
+          </p>
+          <p className="text-slate-300 leading-relaxed">
+            Missing out doesn&apos;t mean you failed — it happens to most buyers at some point.
+          </p>
+        </section>
+
+        {/* Bottom CTA */}
+        <button
+          onClick={() => onNavigate("guide-making-an-offer")}
+          className="w-full py-3 px-6 border border-slate-600 text-slate-300 hover:bg-slate-800 hover:text-white rounded-xl text-sm font-medium transition-colors"
+        >
+          Next: Making an offer →
+        </button>
+      </div>
+
+      <Footer onNavigate={onNavigate} />
+    </div>
+  );
+}
+
+// =====================
+// MAKING AN OFFER GUIDE
+// =====================
+export function MakingAnOfferGuide({ onBack, onNavigate }: PageProps) {
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
+      <div className="px-6 py-4">
+        <button
+          onClick={onBack}
+          className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span className="text-sm">Back</span>
+        </button>
+      </div>
+
+      <div className="max-w-3xl mx-auto px-6 pb-16">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-12 h-12 bg-teal-500/20 rounded-xl flex items-center justify-center">
+            <Handshake className="w-6 h-6 text-teal-400" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-white">Making an offer</h1>
+            <p className="text-slate-400 mt-1">What happens when you decide to move forward — and what&apos;s normal to expect</p>
+          </div>
+        </div>
+
+        <p className="text-slate-300 text-lg leading-relaxed mb-6">
+          Making an offer can feel like a big moment — especially the first time.
+          This guide explains what making an offer actually means, what happens next, and what you don&apos;t need to worry about yet.
+        </p>
+
+        <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-5 mb-8">
+          <p className="text-slate-300 leading-relaxed">
+            <span className="font-medium text-white">An offer is not legally binding.</span>
+            <br />
+            At this stage, nothing is final — and it&apos;s okay to change your mind.
+          </p>
+        </div>
+
+        {/* Section 1 */}
+        <section className="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-6">
+          <h2 className="text-xl font-semibold text-white mb-4">What &quot;making an offer&quot; really means</h2>
+          <p className="text-slate-300 leading-relaxed mb-4">
+            Making an offer is simply telling the seller what you&apos;re willing to pay for the property.
+          </p>
+          <p className="text-slate-300 leading-relaxed mb-4">
+            It&apos;s the start of a conversation — not a commitment.
+          </p>
+          <ul className="space-y-2 mb-4">
+            <li className="flex items-start gap-2 text-slate-300">
+              <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
+              <span>Offers are usually made through the estate agent</span>
+            </li>
+            <li className="flex items-start gap-2 text-slate-300">
+              <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
+              <span>The seller can accept, reject, or counter your offer</span>
+            </li>
+            <li className="flex items-start gap-2 text-slate-300">
+              <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
+              <span>Nothing is legally binding until much later in the process</span>
+            </li>
+          </ul>
+        </section>
+
+        {/* Section 2 */}
+        <section className="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-6">
+          <h2 className="text-xl font-semibold text-white mb-4">What you&apos;ll usually be asked for</h2>
+          <p className="text-slate-300 leading-relaxed mb-4">
+            When you make an offer, the estate agent may ask for some basic information.
+            This is normal and doesn&apos;t mean anything has been agreed yet.
+          </p>
+          <div className="mb-4">
+            <h3 className="text-sm font-medium text-teal-400 mb-2">Common requests</h3>
+            <ul className="space-y-1 text-slate-300 text-sm">
+              <li>• Proof of deposit</li>
+              <li>• Mortgage in principle</li>
+              <li>• Your position (for example, first-time buyer or chain-free)</li>
+            </ul>
+          </div>
+          <div className="bg-teal-500/10 border border-teal-500/30 rounded-lg p-4">
+            <p className="text-slate-300 text-sm"><span className="font-medium text-teal-400">Note:</span> This helps the seller assess how proceedable you are.</p>
+          </div>
+        </section>
+
+        {/* Section 3 */}
+        <section className="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-6">
+          <h2 className="text-xl font-semibold text-white mb-4">If your offer is accepted</h2>
+          <p className="text-slate-300 leading-relaxed mb-4">
+            If the seller accepts your offer, the property is usually marked as &quot;sold subject to contract&quot;.
+            This means the legal process is about to begin — but things can still change.
+          </p>
+          <div className="mb-4">
+            <h3 className="text-sm font-medium text-teal-400 mb-2">What usually happens next</h3>
+            <ul className="space-y-2 text-slate-300">
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
+                <span>You&apos;ll be asked to instruct a solicitor</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
+                <span>Surveys are arranged</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
+                <span>Legal checks and searches begin</span>
+              </li>
+            </ul>
+          </div>
+          <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-4">
+            <p className="text-slate-300 text-sm"><span className="font-medium text-white">Reassurance:</span> You might not hear much for a while — that&apos;s normal.</p>
+          </div>
+        </section>
+
+        {/* Section 4 */}
+        <section className="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-6">
+          <h2 className="text-xl font-semibold text-white mb-4">If your offer isn&apos;t accepted</h2>
+          <p className="text-slate-300 leading-relaxed mb-4">
+            Having an offer rejected is disappointing — but very common.
+            Most buyers miss out on at least one property before succeeding.
+          </p>
+          <ul className="space-y-2 mb-4">
+            <li className="flex items-start gap-2 text-slate-300">
+              <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
+              <span>Sellers may receive multiple offers</span>
+            </li>
+            <li className="flex items-start gap-2 text-slate-300">
+              <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
+              <span>Timing and circumstances often matter as much as price</span>
+            </li>
+            <li className="flex items-start gap-2 text-slate-300">
+              <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
+              <span>You can choose to increase your offer, walk away, or keep looking</span>
+            </li>
+          </ul>
+        </section>
+
+        {/* Optional Section */}
+        <section className="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-8">
+          <h2 className="text-xl font-semibold text-white mb-4">Offers can fall through</h2>
+          <p className="text-slate-300 leading-relaxed mb-4">
+            Even after an offer is accepted, sales can fall through.
+            It&apos;s disappointing, but it happens for many reasons outside your control.
+          </p>
+          <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-4">
+            <p className="text-slate-300 text-sm"><span className="font-medium text-white">Reassurance:</span> It doesn&apos;t mean you did anything wrong.</p>
+          </div>
+        </section>
+
+        {/* Bottom CTA */}
+        <button
+          onClick={() => onNavigate("guide-legal-and-conveyancing")}
+          className="w-full py-3 px-6 border border-slate-600 text-slate-300 hover:bg-slate-800 hover:text-white rounded-xl text-sm font-medium transition-colors"
+        >
+          Next: Legal & conveyancing →
+        </button>
+      </div>
+
+      <Footer onNavigate={onNavigate} />
+    </div>
+  );
+}
+
+// =====================
+// LEGAL & CONVEYANCING GUIDE
+// =====================
+export function LegalAndConveyancingGuide({ onBack, onNavigate }: PageProps) {
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
+      <div className="px-6 py-4">
+        <button
+          onClick={onBack}
+          className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span className="text-sm">Back</span>
+        </button>
+      </div>
+
+      <div className="max-w-3xl mx-auto px-6 pb-16">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-12 h-12 bg-teal-500/20 rounded-xl flex items-center justify-center">
+            <Scale className="w-6 h-6 text-teal-400" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-white">Legal & conveyancing</h1>
+            <p className="text-slate-400 mt-1">What the legal stage involves — and why it often feels slow</p>
+          </div>
+        </div>
+
+        <p className="text-slate-300 text-lg leading-relaxed mb-6">
+          Legal and conveyancing is the part of the process where the paperwork happens.
+          It&apos;s often the longest stage, and the one with the fewest visible updates.
+        </p>
+        <p className="text-slate-300 text-lg leading-relaxed mb-6">
+          This guide explains what&apos;s going on behind the scenes and what&apos;s normal to expect.
+        </p>
+
+        <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-5 mb-8">
+          <p className="text-slate-300 leading-relaxed">
+            <span className="font-medium text-white">Long periods of silence are common at this stage.</span>
+            <br />
+            It usually means work is happening in the background.
+          </p>
+        </div>
+
+        {/* Section 1 */}
+        <section className="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-6">
+          <h2 className="text-xl font-semibold text-white mb-4">What conveyancing actually is</h2>
+          <p className="text-slate-300 leading-relaxed mb-4">
+            Conveyancing is the legal work that transfers ownership of a property from the seller to you.
+          </p>
+          <p className="text-slate-300 leading-relaxed mb-4">
+            Your solicitor handles this process on your behalf.
+          </p>
+          <ul className="space-y-2 mb-4">
+            <li className="flex items-start gap-2 text-slate-300">
+              <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
+              <span>Checking the legal title</span>
+            </li>
+            <li className="flex items-start gap-2 text-slate-300">
+              <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
+              <span>Reviewing contracts</span>
+            </li>
+            <li className="flex items-start gap-2 text-slate-300">
+              <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
+              <span>Raising and answering legal enquiries</span>
+            </li>
+          </ul>
+          <div className="bg-teal-500/10 border border-teal-500/30 rounded-lg p-4">
+            <p className="text-slate-300 text-sm"><span className="font-medium text-teal-400">Helper note:</span> This stage is detailed and methodical by design.</p>
+          </div>
+        </section>
+
+        {/* Section 2 */}
+        <section className="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-6">
+          <h2 className="text-xl font-semibold text-white mb-4">Searches and checks</h2>
+          <p className="text-slate-300 leading-relaxed mb-4">
+            Your solicitor will order searches (such as local authority, water and drainage, and environmental) to uncover information about the property and the local area.
+            Searches can take several weeks, depending on the local council.
+          </p>
+        </section>
+
+        {/* Section 3 */}
+        <section className="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-6">
+          <h2 className="text-xl font-semibold text-white mb-4">Surveys and enquiries</h2>
+          <p className="text-slate-300 leading-relaxed mb-4">
+            While legal checks are ongoing, surveys are usually carried out —{" "}
+            <button type="button" onClick={() => onNavigate("guide-surveys")} className="text-teal-400 hover:text-teal-300 underline underline-offset-2">
+              see our Surveys guide
+            </button>{" "}
+            for more on what they involve.
+            Survey results may lead to further questions or negotiations.
+          </p>
+          <ul className="space-y-2 mb-4">
+            <li className="flex items-start gap-2 text-slate-300">
+              <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
+              <span>Issues found don&apos;t automatically mean the purchase will fail</span>
+            </li>
+            <li className="flex items-start gap-2 text-slate-300">
+              <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
+              <span>Your solicitor may raise additional enquiries</span>
+            </li>
+          </ul>
+        </section>
+
+        {/* Section 4 */}
+        <section className="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-6">
+          <h2 className="text-xl font-semibold text-white mb-4">Why this stage feels slow</h2>
+          <p className="text-slate-300 leading-relaxed mb-4">
+            Many different parties are involved at this point:
+          </p>
+          <ul className="list-disc list-inside text-slate-300 space-y-1 mb-4">
+            <li>Solicitors</li>
+            <li>Surveyors</li>
+            <li>Local authorities</li>
+          </ul>
+          <p className="text-slate-300 leading-relaxed mb-4">
+            Progress depends on responses from several organisations.
+            Slow progress is usual here — it doesn&apos;t mean there&apos;s a problem.
+          </p>
+        </section>
+
+        {/* Optional Section */}
+        <section className="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-8">
+          <h2 className="text-xl font-semibold text-white mb-4">Things can still change</h2>
+          <p className="text-slate-300 leading-relaxed mb-4">
+            Until contracts are exchanged, either side can still withdraw.
+            This uncertainty is frustrating, but it&apos;s part of the process.
+          </p>
+          <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-4">
+            <p className="text-slate-300 text-sm"><span className="font-medium text-white">Reassurance:</span> Try not to make irreversible plans until exchange has taken place.</p>
+          </div>
+        </section>
+
+        {/* Bottom CTA */}
+        <button
+          onClick={() => onNavigate("tracker")}
+          className="w-full py-3 px-6 border border-slate-600 text-slate-300 hover:bg-slate-800 hover:text-white rounded-xl text-sm font-medium transition-colors"
+        >
+          Next: Exchange & completion →
+        </button>
+      </div>
+
+      <Footer onNavigate={onNavigate} />
+    </div>
   );
 }
 

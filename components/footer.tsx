@@ -65,6 +65,11 @@ export function Footer({ onNavigate }: FooterProps) {
                 </a>
               </li>
               <li>
+                <a href="#" onClick={handleLinkClick("guide-making-an-offer")} className="text-sm hover:text-teal-400 transition-colors">
+                  Making an offer
+                </a>
+              </li>
+              <li>
                 <a href="#" onClick={handleLinkClick("guide-mortgages")} className="text-sm hover:text-teal-400 transition-colors">
                   Mortgages
                 </a>

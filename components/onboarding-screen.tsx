@@ -13,7 +13,8 @@ import { Footer } from "@/components/footer";
 
 interface OnboardingScreenProps {
   onBegin: () => void;
-  onLogin?: () => void;
+  onOpenLogin?: () => void;
+  userEmail?: string | null;
   onNavigate?: (screen: string) => void;
 }
 
@@ -47,9 +48,24 @@ const PAIN_CARDS = [
   },
 ];
 
-export function OnboardingScreen({ onBegin }: OnboardingScreenProps) {
+export function OnboardingScreen({ onBegin, onOpenLogin, userEmail, onNavigate }: OnboardingScreenProps) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white flex flex-col">
+      {onOpenLogin && (
+        <header className="shrink-0 flex justify-end items-center px-6 py-4">
+          {userEmail ? (
+            <span className="text-sm text-gray-300">My journey</span>
+          ) : (
+            <button
+              type="button"
+              onClick={onOpenLogin}
+              className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
+            >
+              Log in
+            </button>
+          )}
+        </header>
+      )}
       <div className="flex-1 flex flex-col">
         {/* Hero */}
         <section className="flex flex-col items-center text-center px-6 pt-12 pb-10">
@@ -155,7 +171,7 @@ export function OnboardingScreen({ onBegin }: OnboardingScreenProps) {
         </section>
       </div>
 
-      <Footer />
+      <Footer onNavigate={onNavigate} />
     </div>
   );
 }
