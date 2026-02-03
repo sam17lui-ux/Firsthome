@@ -561,11 +561,20 @@ export function JourneyTrackerScreen({ onBack, onOpenChat, onNavigate, onOpenLog
       <div className="bg-slate-800/60 backdrop-blur-sm border border-slate-700/50 rounded-3xl p-6 shadow-lg mb-6">
         <div className="flex items-center justify-between mb-3">
           <div>
-            <h3 className="text-lg text-white font-medium">You're {calculateProgress()}% there</h3>
-            <p className="text-sm text-gray-400">Keep going — you've got this</p>
+            {calculateProgress() === 0 ? (
+              <>
+                <h3 className="text-lg text-white font-medium">Getting started</h3>
+                <p className="text-sm text-gray-400">This is where most first-time buyers begin.</p>
+              </>
+            ) : (
+              <>
+                <h3 className="text-lg text-white font-medium">You&apos;re {calculateProgress()}% there</h3>
+                <p className="text-sm text-gray-400">Keep going — you&apos;ve got this</p>
+              </>
+            )}
           </div>
           <span className="text-3xl">
-            {calculateProgress() === 100 ? "🎉" : calculateProgress() > 50 ? "💪" : "👏"}
+            {calculateProgress() === 100 ? "🎉" : calculateProgress() > 50 ? "💪" : calculateProgress() === 0 ? "" : "👏"}
           </span>
         </div>
         <div className="w-full bg-slate-700 rounded-full h-3">
