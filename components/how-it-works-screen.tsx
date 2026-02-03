@@ -17,6 +17,8 @@ interface HowItWorksScreenProps {
   onBegin: () => void;
   onBack?: () => void;
   onOpenLogin?: () => void;
+  onLogout?: () => void;
+  onNavigateToAccount?: () => void;
   userEmail?: string | null;
   onNavigate?: (screen: string) => void;
 }
@@ -103,7 +105,7 @@ function ChecklistPreviewMini() {
   );
 }
 
-export function HowItWorksScreen({ onBegin, onBack, onOpenLogin, userEmail, onNavigate }: HowItWorksScreenProps) {
+export function HowItWorksScreen({ onBegin, onBack, onOpenLogin, onLogout, onNavigateToAccount, userEmail, onNavigate }: HowItWorksScreenProps) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white flex flex-col">
       <header className="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700/50 sticky top-0 z-20 shrink-0">
@@ -119,17 +121,37 @@ export function HowItWorksScreen({ onBegin, onBack, onOpenLogin, userEmail, onNa
               </button>
             )}
           </div>
-          {onOpenLogin && (
+          {(onOpenLogin || onLogout) && (
             userEmail ? (
-              <span className="text-sm text-gray-300">My journey</span>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={onNavigateToAccount}
+                  className="text-sm text-gray-300 hover:text-white truncate max-w-[160px] text-left"
+                  title={userEmail}
+                >
+                  {userEmail}
+                </button>
+                {onLogout && (
+                  <button
+                    type="button"
+                    onClick={onLogout}
+                    className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
+                  >
+                    Log out
+                  </button>
+                )}
+              </div>
             ) : (
-              <button
-                type="button"
-                onClick={onOpenLogin}
-                className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
-              >
-                Log in
-              </button>
+              onOpenLogin && (
+                <button
+                  type="button"
+                  onClick={onOpenLogin}
+                  className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
+                >
+                  Log in
+                </button>
+              )
             )
           )}
         </div>

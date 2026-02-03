@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { signIn, signUp } from "@/lib/supabase-auth";
 
 interface AuthModalProps {
   open: boolean;
@@ -41,6 +42,8 @@ export function AuthModal({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [touched, setTouched] = useState({ email: false, password: false });
+  const [loading, setLoading] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   useEffect(() => {
     if (open) {
@@ -48,6 +51,7 @@ export function AuthModal({
       setEmail("");
       setPassword("");
       setTouched({ email: false, password: false });
+      setAuthError(null);
     }
   }, [open, defaultMode]);
 
@@ -61,16 +65,23 @@ export function AuthModal({
     isValidEmail(email) &&
     password.length >= 8;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setTouched({ email: true, password: true });
+    setAuthError(null);
     if (!isValid) return;
 
-    if (mode === "login") {
-      onLogin(email);
-    } else {
-      onCreateAccount(email);
+    setLoading(true);
+    const { error } = mode === "login"
+      ? await signIn(email, password)
+      : await signUp(email, password);
+    setLoading(false);
+
+    if (error) {
+      setAuthError(error);
+      return;
     }
+    onLogin(email);
     onClose();
   };
 
@@ -113,6 +124,11 @@ export function AuthModal({
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-5">
+          {authError && (
+            <p className="text-sm text-red-400 bg-red-900/20 border border-red-800/50 rounded-lg px-4 py-3">
+              {authError}
+            </p>
+          )}
           <div className="space-y-2">
             <Label htmlFor="auth-email" className="text-slate-300">
               Email address
@@ -155,10 +171,10 @@ export function AuthModal({
 
           <Button
             type="submit"
-            disabled={!isValid}
+            disabled={!isValid || loading}
             className="w-full h-12 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {mode === "login" ? "Log in" : "Create account"}
+            {loading ? "Please wait…" : mode === "login" ? "Log in" : "Create account"}
           </Button>
         </form>
 

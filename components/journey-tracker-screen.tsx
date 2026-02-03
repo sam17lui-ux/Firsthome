@@ -22,6 +22,7 @@ import { Footer } from "@/components/footer";
 import { SignupPromptModal } from "@/components/signup-prompt-modal";
 import { getDefaultStages, type Stage, type ChecklistItem } from "@/lib/default-stages";
 import { loadJourney, saveJourney, toPersisted, mergePersisted, deriveStageStatus } from "@/lib/journey-storage";
+import { fetchJourney, upsertJourney } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 
 const LAYOUT = {
@@ -110,10 +111,13 @@ interface JourneyTrackerScreenProps {
   onNavigate?: (screen: string) => void;
   onOpenLogin?: () => void;
   onOpenCreateAccount?: () => void;
+  onLogout?: () => void;
+  onNavigateToAccount?: () => void;
   userEmail?: string | null;
+  userId?: string | null;
 }
 
-export function JourneyTrackerScreen({ onBack, onOpenChat, onNavigate, onOpenLogin, onOpenCreateAccount, userEmail }: JourneyTrackerScreenProps) {
+export function JourneyTrackerScreen({ onBack, onOpenChat, onNavigate, onOpenLogin, onOpenCreateAccount, onLogout, onNavigateToAccount, userEmail, userId }: JourneyTrackerScreenProps) {
   const [stages, setStages] = useState<Stage[]>(() => getDefaultStages());
   const hasHydrated = useRef(false);
   const hasDismissedSignupThisSession = useRef(false);
@@ -130,15 +134,29 @@ export function JourneyTrackerScreen({ onBack, onOpenChat, onNavigate, onOpenLog
   const selectedTask = getSelectedTask(stages, selectedTaskKey);
 
   useEffect(() => {
-    const persisted = loadJourney();
-    setStages(mergePersisted(getDefaultStages(), persisted));
-    hasHydrated.current = true;
-  }, []);
+    let cancelled = false;
+    async function hydrate() {
+      if (userId) {
+        const remote = await fetchJourney(userId);
+        if (cancelled) return;
+        setStages(mergePersisted(getDefaultStages(), remote ?? loadJourney()));
+      } else {
+        setStages(mergePersisted(getDefaultStages(), loadJourney()));
+      }
+      hasHydrated.current = true;
+    }
+    hydrate();
+    return () => { cancelled = true; };
+  }, [userId]);
 
   useEffect(() => {
     if (!hasHydrated.current) return;
-    saveJourney(toPersisted(stages));
-  }, [stages]);
+    const data = toPersisted(stages);
+    saveJourney(data);
+    if (userId) {
+      upsertJourney(userId, data);
+    }
+  }, [stages, userId]);
 
   useEffect(() => {
     if (selectedTaskKey) {
@@ -259,17 +277,37 @@ export function JourneyTrackerScreen({ onBack, onOpenChat, onNavigate, onOpenLog
     />
   );
 
-  const headerLoginButton = onOpenLogin && (
+  const headerLoginButton = (onOpenLogin || onLogout) && (
     userEmail ? (
-      <span className="text-sm text-gray-300">My journey</span>
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={onNavigateToAccount}
+          className="text-sm text-gray-300 hover:text-white truncate max-w-[160px] text-left"
+          title={userEmail}
+        >
+          {userEmail}
+        </button>
+        {onLogout && (
+          <button
+            type="button"
+            onClick={onLogout}
+            className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
+          >
+            Log out
+          </button>
+        )}
+      </div>
     ) : (
-      <button
-        type="button"
-        onClick={onOpenLogin}
-        className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
-      >
-        Log in
-      </button>
+      onOpenLogin && (
+        <button
+          type="button"
+          onClick={onOpenLogin}
+          className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
+        >
+          Log in
+        </button>
+      )
     )
   );
 

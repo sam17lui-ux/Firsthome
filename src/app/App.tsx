@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { OnboardingScreen } from "@/components/onboarding-screen";
 import { HowItWorksScreen } from "@/components/how-it-works-screen";
 import { ChatAssistantScreen } from "@/components/chat-assistant-screen";
@@ -7,6 +7,8 @@ import { AuthModal } from "@/components/auth-modal";
 import { HouseHuntingGuide, MakingAnOfferGuide, LegalAndConveyancingGuide, MortgagesGuide, SolicitorsGuide, SurveysGuide, MovingDayGuide } from "@/components/pages/guide-pages";
 import { FAQsPage, GlossaryPage, CostCalculatorPage, TimelineGuidePage } from "@/components/pages/resource-pages";
 import { AboutPage, ContactPage, PrivacyPolicyPage, TermsOfServicePage, CookiePolicyPage, AccessibilityPage } from "@/components/pages/company-pages";
+import { AccountScreen } from "@/components/account-screen";
+import { getSession, onAuthChange, signOut } from "@/lib/supabase-auth";
 
 type Screen =
   | "onboarding"
@@ -29,14 +31,29 @@ type Screen =
   | "privacy"
   | "terms"
   | "cookies"
-  | "accessibility";
+  | "accessibility"
+  | "account";
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>("onboarding");
   const [previousScreen, setPreviousScreen] = useState<Screen>("onboarding");
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authModalMode, setAuthModalMode] = useState<"login" | "create">("login");
+
+  useEffect(() => {
+    getSession().then((u) => {
+      if (u) {
+        setUserEmail(u.email);
+        setUserId(u.id);
+      }
+    });
+    return onAuthChange((u) => {
+      setUserEmail(u?.email ?? null);
+      setUserId(u?.id ?? null);
+    });
+  }, []);
 
   const navigateTo = (screen: string) => {
     setPreviousScreen(currentScreen);
@@ -44,7 +61,7 @@ export default function App() {
   };
 
   const handleBack = () => {
-    const contentPages: Screen[] = ["faqs", "glossary", "cost-calculator", "timeline", "about", "contact", "privacy", "terms", "cookies", "accessibility", "guide-house-hunting", "guide-making-an-offer", "guide-legal-and-conveyancing", "guide-mortgages", "guide-solicitors", "guide-surveys", "guide-moving"];
+    const contentPages: Screen[] = ["faqs", "glossary", "cost-calculator", "timeline", "about", "contact", "privacy", "terms", "cookies", "accessibility", "account", "guide-house-hunting", "guide-making-an-offer", "guide-legal-and-conveyancing", "guide-mortgages", "guide-solicitors", "guide-surveys", "guide-moving"];
     if (contentPages.includes(currentScreen)) {
       setCurrentScreen(previousScreen === currentScreen ? "tracker" : previousScreen);
     } else {
@@ -60,6 +77,12 @@ export default function App() {
   const openCreateAccountModal = () => {
     setAuthModalMode("create");
     setShowAuthModal(true);
+  };
+
+  const handleLogout = () => {
+    signOut();
+    setUserEmail(null);
+    setUserId(null);
   };
 
   // Guide pages
@@ -85,12 +108,26 @@ export default function App() {
   if (currentScreen === "cookies") return <CookiePolicyPage onBack={handleBack} onNavigate={navigateTo} />;
   if (currentScreen === "accessibility") return <AccessibilityPage onBack={handleBack} onNavigate={navigateTo} />;
 
+  if (currentScreen === "account" && userEmail) {
+    return (
+      <AccountScreen
+        userEmail={userEmail}
+        userId={userId}
+        onBack={handleBack}
+        onLogout={handleLogout}
+        onNavigate={navigateTo}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen">
       {currentScreen === "onboarding" && (
         <OnboardingScreen
           onBegin={() => setCurrentScreen("how-it-works")}
           onOpenLogin={openLoginModal}
+          onLogout={handleLogout}
+          onNavigateToAccount={() => navigateTo("account")}
           userEmail={userEmail}
           onNavigate={navigateTo}
         />
@@ -100,6 +137,8 @@ export default function App() {
           onBegin={() => setCurrentScreen("tracker")}
           onBack={() => setCurrentScreen("onboarding")}
           onOpenLogin={openLoginModal}
+          onLogout={handleLogout}
+          onNavigateToAccount={() => navigateTo("account")}
           userEmail={userEmail}
           onNavigate={navigateTo}
         />
@@ -116,7 +155,10 @@ export default function App() {
           onOpenChat={() => setCurrentScreen("chat")}
           onOpenLogin={openLoginModal}
           onOpenCreateAccount={openCreateAccountModal}
+          onLogout={handleLogout}
+          onNavigateToAccount={() => navigateTo("account")}
           userEmail={userEmail}
+          userId={userId}
           onNavigate={navigateTo}
         />
       )}

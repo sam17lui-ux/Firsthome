@@ -14,6 +14,8 @@ import { Footer } from "@/components/footer";
 interface OnboardingScreenProps {
   onBegin: () => void;
   onOpenLogin?: () => void;
+  onLogout?: () => void;
+  onNavigateToAccount?: () => void;
   userEmail?: string | null;
   onNavigate?: (screen: string) => void;
 }
@@ -48,21 +50,41 @@ const PAIN_CARDS = [
   },
 ];
 
-export function OnboardingScreen({ onBegin, onOpenLogin, userEmail, onNavigate }: OnboardingScreenProps) {
+export function OnboardingScreen({ onBegin, onOpenLogin, onLogout, onNavigateToAccount, userEmail, onNavigate }: OnboardingScreenProps) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white flex flex-col">
-      {onOpenLogin && (
-        <header className="shrink-0 flex justify-end items-center px-6 py-4">
+      {(onOpenLogin || onLogout) && (
+        <header className="shrink-0 flex justify-end items-center gap-3 px-6 py-4">
           {userEmail ? (
-            <span className="text-sm text-gray-300">My journey</span>
+            <>
+              <button
+                type="button"
+                onClick={onNavigateToAccount}
+                className="text-sm text-gray-300 hover:text-white truncate max-w-[160px] text-left"
+                title={userEmail}
+              >
+                {userEmail}
+              </button>
+              {onLogout && (
+                <button
+                  type="button"
+                  onClick={onLogout}
+                  className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
+                >
+                  Log out
+                </button>
+              )}
+            </>
           ) : (
-            <button
-              type="button"
-              onClick={onOpenLogin}
-              className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
-            >
-              Log in
-            </button>
+            onOpenLogin && (
+              <button
+                type="button"
+                onClick={onOpenLogin}
+                className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
+              >
+                Log in
+              </button>
+            )
           )}
         </header>
       )}
