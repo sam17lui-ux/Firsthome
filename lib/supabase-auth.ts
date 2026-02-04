@@ -20,13 +20,13 @@ export function onAuthChange(cb: (user: AuthUser | null) => void): () => void {
 }
 
 export async function signIn(email: string, password: string): Promise<{ error: string | null }> {
-  if (!supabase) return { error: null }; // Fallback: caller treats as success (simulated auth)
+  if (!supabase) return { error: "Supabase is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to .env.local" };
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   return { error: error?.message ?? null };
 }
 
 export async function signUp(email: string, password: string): Promise<{ error: string | null }> {
-  if (!supabase) return { error: null };
+  if (!supabase) return { error: "Supabase is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to .env.local" };
   const { error } = await supabase.auth.signUp({ email, password });
   return { error: error?.message ?? null };
 }
@@ -36,16 +36,13 @@ export async function signOut(): Promise<void> {
 }
 
 export async function updatePassword(newPassword: string): Promise<{ error: string | null }> {
-  if (!supabase) return { error: null };
+  if (!supabase) return { error: "Supabase is not configured" };
   const { error } = await supabase.auth.updateUser({ password: newPassword });
   return { error: error?.message ?? null };
 }
 
 export async function deleteAccount(): Promise<{ error: string | null }> {
-  if (!supabase) {
-    await signOut();
-    return { error: null };
-  }
+  if (!supabase) return { error: "Supabase is not configured" };
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user?.id) return { error: "Not signed in" };

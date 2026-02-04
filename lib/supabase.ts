@@ -5,7 +5,12 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn("Supabase env vars missing. Auth and journey sync will fall back to local.");
+  const missing: string[] = [];
+  if (!supabaseUrl) missing.push("VITE_SUPABASE_URL");
+  if (!supabaseAnonKey) missing.push("VITE_SUPABASE_ANON_KEY");
+  console.error(
+    `[FirstHome] Supabase config missing: ${missing.join(", ")}. Add these to .env.local for auth and journey sync.`
+  );
 }
 
 export const supabase =
