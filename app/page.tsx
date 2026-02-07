@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { OnboardingScreen } from "@/components/onboarding-screen";
 import { HowItWorksScreen } from "@/components/how-it-works-screen";
 import { ChatAssistantScreen } from "@/components/chat-assistant-screen";
@@ -40,6 +40,15 @@ export default function Home() {
   const [currentScreen, setCurrentScreen] = useState<Screen>("onboarding");
   const [previousScreen, setPreviousScreen] = useState<Screen>("onboarding");
   const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    const scrollToTop = () => {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    };
+    requestAnimationFrame(() => requestAnimationFrame(scrollToTop));
+  }, [currentScreen]);
 
   const navigateTo = (screen: string) => {
     setPreviousScreen(currentScreen);

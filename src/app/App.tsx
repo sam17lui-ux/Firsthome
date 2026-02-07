@@ -55,6 +55,15 @@ export default function App() {
     });
   }, []);
 
+  useEffect(() => {
+    const scrollToTop = () => {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    };
+    requestAnimationFrame(() => requestAnimationFrame(scrollToTop));
+  }, [currentScreen]);
+
   const navigateTo = (screen: string) => {
     setPreviousScreen(currentScreen);
     setCurrentScreen(screen as Screen);
