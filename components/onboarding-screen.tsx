@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/footer";
+import { ChatEntryPoint } from "@/components/chat-entry-point";
 
 interface OnboardingScreenProps {
   onBegin: () => void;
@@ -194,6 +195,7 @@ export function OnboardingScreen({ onBegin, onOpenLogin, onLogout, onNavigateToA
       </div>
 
       <Footer onNavigate={onNavigate} />
+      {onNavigate && <ChatEntryPoint onOpenChat={() => onNavigate("chat")} />}
     </div>
   );
 }

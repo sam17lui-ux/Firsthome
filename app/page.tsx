@@ -9,7 +9,7 @@ import { CreateAccountScreen } from "@/components/create-account-screen";
 import { LoginScreen } from "@/components/login-screen";
 import { FAQsPage, GlossaryPage, CostCalculatorPage, TimelineGuidePage } from "@/components/pages/resource-pages";
 import { AboutPage, ContactPage, PrivacyPolicyPage, TermsOfServicePage, CookiePolicyPage, AccessibilityPage } from "@/components/pages/company-pages";
-import { HouseHuntingGuide, MakingAnOfferGuide, LegalAndConveyancingGuide, MortgagesGuide, SolicitorsGuide, SurveysGuide, MovingDayGuide } from "@/components/pages/guide-pages";
+import { HouseHuntingGuide, MakingAnOfferGuide, PrepareForLegalFinancialGuide, LegalAndConveyancingGuide, MortgagesGuide, SolicitorsGuide, SurveysGuide, MovingDayGuide } from "@/components/pages/guide-pages";
 
 type Screen = 
   | "onboarding" 
@@ -30,6 +30,7 @@ type Screen =
   | "accessibility"
   | "guide-house-hunting"
   | "guide-making-an-offer"
+  | "guide-prep-legal-financial"
   | "guide-legal-and-conveyancing"
   | "guide-mortgages"
   | "guide-solicitors"
@@ -56,7 +57,7 @@ export default function Home() {
   };
 
   const handleBack = () => {
-    const contentPages = ["faqs", "glossary", "cost-calculator", "timeline", "about", "contact", "privacy", "terms", "cookies", "accessibility", "guide-house-hunting", "guide-making-an-offer", "guide-legal-and-conveyancing", "guide-mortgages", "guide-solicitors", "guide-surveys", "guide-moving"];
+    const contentPages = ["faqs", "glossary", "cost-calculator", "timeline", "about", "contact", "privacy", "terms", "cookies", "accessibility", "guide-house-hunting", "guide-making-an-offer", "guide-prep-legal-financial", "guide-legal-and-conveyancing", "guide-mortgages", "guide-solicitors", "guide-surveys", "guide-moving"];
     if (contentPages.includes(currentScreen)) {
       setCurrentScreen(previousScreen === currentScreen ? "tracker" : previousScreen);
     } else if (currentScreen === "login" || currentScreen === "create-account") {
@@ -88,6 +89,7 @@ export default function Home() {
   // Guide pages
   if (currentScreen === "guide-house-hunting") return <HouseHuntingGuide onBack={handleBack} onNavigate={navigateTo} />;
   if (currentScreen === "guide-making-an-offer") return <MakingAnOfferGuide onBack={handleBack} onNavigate={navigateTo} />;
+  if (currentScreen === "guide-prep-legal-financial") return <PrepareForLegalFinancialGuide onBack={handleBack} onNavigate={navigateTo} />;
   if (currentScreen === "guide-legal-and-conveyancing") return <LegalAndConveyancingGuide onBack={handleBack} onNavigate={navigateTo} />;
   if (currentScreen === "guide-mortgages") return <MortgagesGuide onBack={handleBack} onNavigate={navigateTo} />;
   if (currentScreen === "guide-solicitors") return <SolicitorsGuide onBack={handleBack} onNavigate={navigateTo} />;

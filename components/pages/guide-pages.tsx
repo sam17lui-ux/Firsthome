@@ -2,8 +2,10 @@
 
 import React from "react"
 
-import { ArrowLeft, Home, Search, FileText, ClipboardCheck, Truck, CheckCircle2, Handshake, Scale } from "lucide-react";
+import { ArrowLeft, Home, Search, FileText, ClipboardCheck, Truck, CheckCircle2, Handshake, Scale, Wallet } from "lucide-react";
 import { Footer } from "@/components/footer";
+import { ChatEntryPoint } from "@/components/chat-entry-point";
+import { GuideNavigation } from "@/components/GuideNavigation";
 
 interface PageProps {
   onBack: () => void;
@@ -11,20 +13,24 @@ interface PageProps {
 }
 
 // Shared guide layout component
-function GuideLayout({ 
-  title, 
-  icon: Icon, 
-  intro, 
-  sections, 
-  onBack, 
-  onNavigate 
-}: { 
+function GuideLayout({
+  title,
+  icon: Icon,
+  intro,
+  sections,
+  onBack,
+  onNavigate,
+  previous,
+  next,
+}: {
   title: string;
   icon: React.ElementType;
   intro: string;
   sections: { title: string; content: string; tips?: string[] }[];
   onBack: () => void;
   onNavigate: (page: string) => void;
+  previous?: { title: string; href: string };
+  next?: { title: string; href: string };
 }) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
@@ -69,8 +75,11 @@ function GuideLayout({
             </div>
           ))}
         </div>
+
+        <GuideNavigation previous={previous} next={next} onNavigate={onNavigate} />
       </div>
       <Footer onNavigate={onNavigate} />
+      <ChatEntryPoint onOpenChat={() => onNavigate("chat")} label="Need help understanding this?" />
     </div>
   );
 }
@@ -98,13 +107,13 @@ export function HouseHuntingGuide({ onBack, onNavigate }: PageProps) {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-white">House hunting</h1>
-            <p className="text-slate-400 mt-1">How to find the right home — without feeling overwhelmed</p>
+            <p className="text-slate-400 mt-1">How to find the right home without feeling overwhelmed</p>
           </div>
         </div>
 
         <p className="text-slate-300 text-lg leading-relaxed mb-6">
           House hunting is often the most emotional part of buying a home.
-          This guide helps you focus on what really matters, what you can ignore, and how to stay realistic — especially if this is your first time.
+          This guide helps you focus on what really matters, what you can ignore, and how to stay realistic, especially if this is your first time.
         </p>
 
         <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-5 mb-8">
@@ -119,7 +128,7 @@ export function HouseHuntingGuide({ onBack, onNavigate }: PageProps) {
         <section className="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-6">
           <h2 className="text-xl font-semibold text-white mb-4">Know what you can afford (before you fall in love)</h2>
           <p className="text-slate-300 leading-relaxed mb-4">
-            Before you book viewings, it's important to understand what you can realistically afford — not just the asking price.
+            Before you book viewings, it's important to understand what you can realistically afford, not just the asking price.
           </p>
           <p className="text-slate-300 leading-relaxed mb-4">
             The price on the listing isn't the full picture. Buying a home comes with ongoing monthly costs too.
@@ -147,7 +156,7 @@ export function HouseHuntingGuide({ onBack, onNavigate }: PageProps) {
         <section className="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-6">
           <h2 className="text-xl font-semibold text-white mb-4">Must-haves vs nice-to-haves</h2>
           <p className="text-slate-300 leading-relaxed mb-4">
-            It's easy to want everything — but very few first homes tick every box.
+            It's easy to want everything, but very few first homes tick every box.
           </p>
           <div className="grid sm:grid-cols-2 gap-4 mb-4">
             <div>
@@ -168,7 +177,7 @@ export function HouseHuntingGuide({ onBack, onNavigate }: PageProps) {
             </div>
           </div>
           <div className="bg-teal-500/10 border border-teal-500/30 rounded-lg p-4">
-            <p className="text-slate-300 text-sm"><span className="font-medium text-teal-400">Tip:</span> You can often change a kitchen later — you can't change the location.</p>
+            <p className="text-slate-300 text-sm"><span className="font-medium text-teal-400">Tip:</span> You can often change a kitchen later. You can't change the location.</p>
           </div>
         </section>
 
@@ -176,7 +185,7 @@ export function HouseHuntingGuide({ onBack, onNavigate }: PageProps) {
         <section className="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-6">
           <h2 className="text-xl font-semibold text-white mb-4">Viewing properties</h2>
           <p className="text-slate-300 leading-relaxed mb-4">
-            Viewing homes is exciting — but first viewings are rarely "the one".
+            Viewing homes is exciting, but first viewings are rarely "the one".
             Take your time and try to stay objective.
           </p>
           <div className="space-y-4 mb-4">
@@ -219,7 +228,7 @@ export function HouseHuntingGuide({ onBack, onNavigate }: PageProps) {
             </li>
             <li className="flex items-start gap-2 text-slate-300">
               <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
-              <span>Revisit listings later — they often look different once emotions settle</span>
+              <span>Revisit listings later. They often look different once emotions settle</span>
             </li>
           </ul>
           <div className="bg-teal-500/10 border border-teal-500/30 rounded-lg p-4">
@@ -239,23 +248,18 @@ export function HouseHuntingGuide({ onBack, onNavigate }: PageProps) {
             <li>Compete with other buyers</li>
           </ul>
           <p className="text-slate-300 leading-relaxed mb-4">
-            This is frustrating — but normal.
+            This is frustrating, but normal.
           </p>
           <p className="text-slate-300 leading-relaxed">
-            Missing out doesn&apos;t mean you failed — it happens to most buyers at some point.
+            Missing out doesn&apos;t mean you failed. It happens to most buyers at some point.
           </p>
         </section>
 
-        {/* Bottom CTA */}
-        <button
-          onClick={() => onNavigate("guide-making-an-offer")}
-          className="w-full py-3 px-6 border border-slate-600 text-slate-300 hover:bg-slate-800 hover:text-white rounded-xl text-sm font-medium transition-colors"
-        >
-          Next: Making an offer →
-        </button>
+        <GuideNavigation next={{ title: "Making an Offer", href: "guide-making-an-offer" }} onNavigate={onNavigate} />
       </div>
 
       <Footer onNavigate={onNavigate} />
+      <ChatEntryPoint onOpenChat={() => onNavigate("chat")} label="Need help understanding this?" />
     </div>
   );
 }
@@ -283,12 +287,12 @@ export function MakingAnOfferGuide({ onBack, onNavigate }: PageProps) {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-white">Making an offer</h1>
-            <p className="text-slate-400 mt-1">What happens when you decide to move forward — and what&apos;s normal to expect</p>
+            <p className="text-slate-400 mt-1">What happens when you decide to move forward, and what's normal to expect</p>
           </div>
         </div>
 
         <p className="text-slate-300 text-lg leading-relaxed mb-6">
-          Making an offer can feel like a big moment — especially the first time.
+          Making an offer can feel like a big moment, especially the first time.
           This guide explains what making an offer actually means, what happens next, and what you don&apos;t need to worry about yet.
         </p>
 
@@ -296,7 +300,7 @@ export function MakingAnOfferGuide({ onBack, onNavigate }: PageProps) {
           <p className="text-slate-300 leading-relaxed">
             <span className="font-medium text-white">An offer is not legally binding.</span>
             <br />
-            At this stage, nothing is final — and it&apos;s okay to change your mind.
+            At this stage, nothing is final, and it&apos;s okay to change your mind.
           </p>
         </div>
 
@@ -307,7 +311,7 @@ export function MakingAnOfferGuide({ onBack, onNavigate }: PageProps) {
             Making an offer is simply telling the seller what you&apos;re willing to pay for the property.
           </p>
           <p className="text-slate-300 leading-relaxed mb-4">
-            It&apos;s the start of a conversation — not a commitment.
+            It&apos;s the start of a conversation, not a commitment.
           </p>
           <ul className="space-y-2 mb-4">
             <li className="flex items-start gap-2 text-slate-300">
@@ -350,7 +354,7 @@ export function MakingAnOfferGuide({ onBack, onNavigate }: PageProps) {
           <h2 className="text-xl font-semibold text-white mb-4">If your offer is accepted</h2>
           <p className="text-slate-300 leading-relaxed mb-4">
             If the seller accepts your offer, the property is usually marked as &quot;sold subject to contract&quot;.
-            This means the legal process is about to begin — but things can still change.
+            This means the legal process is about to begin, but things can still change.
           </p>
           <div className="mb-4">
             <h3 className="text-sm font-medium text-teal-400 mb-2">What usually happens next</h3>
@@ -370,7 +374,7 @@ export function MakingAnOfferGuide({ onBack, onNavigate }: PageProps) {
             </ul>
           </div>
           <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-4">
-            <p className="text-slate-300 text-sm"><span className="font-medium text-white">Reassurance:</span> You might not hear much for a while — that&apos;s normal.</p>
+            <p className="text-slate-300 text-sm"><span className="font-medium text-white">Reassurance:</span> You might not hear much for a while. That&apos;s normal.</p>
           </div>
         </section>
 
@@ -378,7 +382,7 @@ export function MakingAnOfferGuide({ onBack, onNavigate }: PageProps) {
         <section className="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-6">
           <h2 className="text-xl font-semibold text-white mb-4">If your offer isn&apos;t accepted</h2>
           <p className="text-slate-300 leading-relaxed mb-4">
-            Having an offer rejected is disappointing — but very common.
+            Having an offer rejected is disappointing, but very common.
             Most buyers miss out on at least one property before succeeding.
           </p>
           <ul className="space-y-2 mb-4">
@@ -409,16 +413,15 @@ export function MakingAnOfferGuide({ onBack, onNavigate }: PageProps) {
           </div>
         </section>
 
-        {/* Bottom CTA */}
-        <button
-          onClick={() => onNavigate("guide-legal-and-conveyancing")}
-          className="w-full py-3 px-6 border border-slate-600 text-slate-300 hover:bg-slate-800 hover:text-white rounded-xl text-sm font-medium transition-colors"
-        >
-          Next: Legal & conveyancing →
-        </button>
+        <GuideNavigation
+          previous={{ title: "House Hunting", href: "guide-house-hunting" }}
+          next={{ title: "Prepare for Legal & Financial", href: "guide-prep-legal-financial" }}
+          onNavigate={onNavigate}
+        />
       </div>
 
       <Footer onNavigate={onNavigate} />
+      <ChatEntryPoint onOpenChat={() => onNavigate("chat")} label="Need help understanding this?" />
     </div>
   );
 }
@@ -446,7 +449,7 @@ export function LegalAndConveyancingGuide({ onBack, onNavigate }: PageProps) {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-white">Legal & conveyancing</h1>
-            <p className="text-slate-400 mt-1">What the legal stage involves — and why it often feels slow</p>
+            <p className="text-slate-400 mt-1">What the legal stage involves, and why it often feels slow</p>
           </div>
         </div>
 
@@ -507,7 +510,7 @@ export function LegalAndConveyancingGuide({ onBack, onNavigate }: PageProps) {
         <section className="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-6">
           <h2 className="text-xl font-semibold text-white mb-4">Surveys and enquiries</h2>
           <p className="text-slate-300 leading-relaxed mb-4">
-            While legal checks are ongoing, surveys are usually carried out —{" "}
+            While legal checks are ongoing, surveys are usually carried out.{" "}
             <button type="button" onClick={() => onNavigate("guide-surveys")} className="text-teal-400 hover:text-teal-300 underline underline-offset-2">
               see our Surveys guide
             </button>{" "}
@@ -539,7 +542,7 @@ export function LegalAndConveyancingGuide({ onBack, onNavigate }: PageProps) {
           </ul>
           <p className="text-slate-300 leading-relaxed mb-4">
             Progress depends on responses from several organisations.
-            Slow progress is usual here — it doesn&apos;t mean there&apos;s a problem.
+            Slow progress is usual here. It doesn&apos;t mean there&apos;s a problem.
           </p>
         </section>
 
@@ -555,22 +558,77 @@ export function LegalAndConveyancingGuide({ onBack, onNavigate }: PageProps) {
           </div>
         </section>
 
-        {/* Bottom CTA */}
-        <button
-          onClick={() => onNavigate("tracker")}
-          className="w-full py-3 px-6 border border-slate-600 text-slate-300 hover:bg-slate-800 hover:text-white rounded-xl text-sm font-medium transition-colors"
-        >
-          Next: Exchange & completion →
-        </button>
+        <GuideNavigation
+          previous={{ title: "Prepare for Legal & Financial", href: "guide-prep-legal-financial" }}
+          next={{ title: "Surveys", href: "guide-surveys" }}
+          onNavigate={onNavigate}
+        />
       </div>
 
       <Footer onNavigate={onNavigate} />
+      <ChatEntryPoint onOpenChat={() => onNavigate("chat")} label="Need help understanding this?" />
     </div>
   );
 }
 
 // =====================
-// MORTGAGES GUIDE
+// PREPARE FOR LEGAL & FINANCIAL GUIDE
+// =====================
+export function PrepareForLegalFinancialGuide({ onBack, onNavigate }: PageProps) {
+  return (
+    <GuideLayout
+      title="Prepare for Legal & Financial"
+      icon={Wallet}
+      intro="Once your offer is accepted, you'll need to get your finances and legal team in order. This guide covers what to sort out before the legal process begins."
+      onBack={onBack}
+      onNavigate={onNavigate}
+      previous={{ title: "Making an Offer", href: "guide-making-an-offer" }}
+      next={{ title: "Legal & Conveyancing", href: "guide-legal-and-conveyancing" }}
+      sections={[
+        {
+          title: "Mortgage in Principle",
+          content: "Get a mortgage in principle before house hunting so you know your budget. After your offer is accepted, you'll make a full application. Lenders typically offer 4-4.5 times your annual income, depending on your outgoings and credit score. A larger deposit usually means better rates.",
+          tips: [
+            "Use online calculators for initial estimates",
+            "Gather proof of income and bank statements early",
+            "Don't make big financial changes during the application",
+          ],
+        },
+        {
+          title: "Choosing a Solicitor",
+          content: "Your solicitor (or conveyancer) handles all the legal work: property searches, contract review, enquiries, and transferring ownership. Get quotes from 3-4 solicitors and check they're on your lender's approved panel.",
+          tips: [
+            "Ask about typical response times",
+            "Check they specialise in residential conveyancing",
+            "Understand their fee structure upfront",
+          ],
+        },
+        {
+          title: "Understanding the Costs",
+          content: "Beyond the deposit, budget for solicitor fees, searches, survey, stamp duty, and mortgage arrangement fees. Sometimes a higher rate with lower fees works out cheaper overall. Calculate the total cost, not just the mortgage rate.",
+          tips: [
+            "Ask about fee-free mortgage options",
+            "Searches typically cost £250-£400 in total",
+            "Check early repayment charges before committing",
+          ],
+        },
+        {
+          title: "Getting Organised",
+          content: "The legal stage works best when you respond quickly to requests. Have your ID, proof of address, and source of funds ready. Keep a record of all correspondence and ask your solicitor to explain anything you don't understand.",
+          tips: [
+            "Respond promptly when your solicitor asks for information",
+            "Create a folder for all property documents",
+            "Know your deal-breakers before the process deepens",
+          ],
+        },
+      ]}
+    />
+  );
+}
+
+// =====================
+// MORTGAGES GUIDE (kept for footer/deep links)
+// =====================
 // =====================
 export function MortgagesGuide({ onBack, onNavigate }: PageProps) {
   return (
@@ -580,6 +638,8 @@ export function MortgagesGuide({ onBack, onNavigate }: PageProps) {
       intro="Understanding mortgages doesn't have to be complicated. Here's everything you need to know about borrowing to buy your home."
       onBack={onBack}
       onNavigate={onNavigate}
+      previous={{ title: "Prepare for Legal & Financial", href: "guide-prep-legal-financial" }}
+      next={{ title: "Legal & Conveyancing", href: "guide-legal-and-conveyancing" }}
       sections={[
         {
           title: "Types of Mortgage",
@@ -633,6 +693,8 @@ export function SolicitorsGuide({ onBack, onNavigate }: PageProps) {
       intro="Your solicitor (or conveyancer) handles all the legal work of buying a property. Understanding what they do helps you stay informed throughout the process."
       onBack={onBack}
       onNavigate={onNavigate}
+      previous={{ title: "Prepare for Legal & Financial", href: "guide-prep-legal-financial" }}
+      next={{ title: "Legal & Conveyancing", href: "guide-legal-and-conveyancing" }}
       sections={[
         {
           title: "What Does a Solicitor Do?",
@@ -686,6 +748,8 @@ export function SurveysGuide({ onBack, onNavigate }: PageProps) {
       intro="A survey can reveal hidden problems that could cost thousands to fix. Here's how to choose the right survey and what to do with the results."
       onBack={onBack}
       onNavigate={onNavigate}
+      previous={{ title: "Legal & Conveyancing", href: "guide-legal-and-conveyancing" }}
+      next={{ title: "Moving Day", href: "guide-moving" }}
       sections={[
         {
           title: "Why Get a Survey?",
@@ -739,6 +803,7 @@ export function MovingDayGuide({ onBack, onNavigate }: PageProps) {
       intro="After months of preparation, moving day is finally here. Good planning makes the difference between a stressful day and a smooth transition to your new home."
       onBack={onBack}
       onNavigate={onNavigate}
+      previous={{ title: "Surveys", href: "guide-surveys" }}
       sections={[
         {
           title: "Before Moving Day",

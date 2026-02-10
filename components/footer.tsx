@@ -70,13 +70,13 @@ export function Footer({ onNavigate }: FooterProps) {
                 </a>
               </li>
               <li>
-                <a href="#" onClick={handleLinkClick("guide-mortgages")} className="text-sm hover:text-teal-400 transition-colors">
-                  Mortgages
+                <a href="#" onClick={handleLinkClick("guide-prep-legal-financial")} className="text-sm hover:text-teal-400 transition-colors">
+                  Prepare for Legal & Financial
                 </a>
               </li>
               <li>
-                <a href="#" onClick={handleLinkClick("guide-solicitors")} className="text-sm hover:text-teal-400 transition-colors">
-                  Solicitors & Legal
+                <a href="#" onClick={handleLinkClick("guide-legal-and-conveyancing")} className="text-sm hover:text-teal-400 transition-colors">
+                  Legal & Conveyancing
                 </a>
               </li>
               <li>

@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/footer";
+import { ChatEntryPoint } from "@/components/chat-entry-point";
 
 interface HowItWorksScreenProps {
   onBegin: () => void;
@@ -224,6 +225,7 @@ export function HowItWorksScreen({ onBegin, onBack, onOpenLogin, onLogout, onNav
       </div>
 
       <Footer onNavigate={onNavigate} />
+      {onNavigate && <ChatEntryPoint onOpenChat={() => onNavigate("chat")} />}
     </div>
   );
 }

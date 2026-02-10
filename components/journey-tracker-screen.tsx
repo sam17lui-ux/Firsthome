@@ -6,7 +6,6 @@ import {
   CheckCircle2,
   Circle,
   Clock,
-  ExternalLink,
   HelpCircle,
   ChevronRight,
   Info,
@@ -423,33 +422,21 @@ export function JourneyTrackerScreen({ onBack, onOpenChat, onNavigate, onOpenLog
           )}
         </section>
 
-        {content.partnerLinks && content.partnerLinks.length > 0 && (
-          <section className="mb-6">
-            <div className="flex items-center justify-between gap-2 mb-3">
-              <h3 className="text-sm text-gray-400 uppercase tracking-wide">Service providers</h3>
-              <span className="text-xs text-slate-400 bg-slate-700/50 px-2 py-1 rounded-full shrink-0">
-                Partnership opportunity
-              </span>
-            </div>
-            <div className="space-y-2">
-              {content.partnerLinks.map((link, idx) => (
-                <a
-                  key={idx}
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between gap-3 p-3 bg-slate-800/40 border border-slate-700/50 hover:border-slate-600 rounded-xl transition-colors group"
-                >
-                  <div className="min-w-0">
-                    <span className="text-gray-200 font-medium block truncate">{link.name}</span>
-                    <span className="text-sm text-gray-500 truncate block">{link.description}</span>
-                  </div>
-                  <ExternalLink className="w-4 h-4 text-gray-500 group-hover:text-gray-400 shrink-0" />
-                </a>
-              ))}
-            </div>
-          </section>
-        )}
+        <section className="mb-6">
+          <h3 className="text-sm text-gray-400 uppercase tracking-wide mb-3">How to choose a provider</h3>
+          <p className="text-gray-300 leading-relaxed mb-3">
+            At this stage you may need to compare options and work with a solicitor, broker, or surveyor.
+          </p>
+          <p className="text-gray-300 leading-relaxed mb-2">Focus on:</p>
+          <ul className="list-disc list-inside text-gray-300 space-y-1 mb-3">
+            <li>Experience with first-time buyers</li>
+            <li>Transparent fees</li>
+            <li>Clear communication</li>
+          </ul>
+          <p className="text-gray-400 text-sm leading-relaxed">
+            We provide guidance on what to look for rather than recommending specific companies.
+          </p>
+        </section>
 
         <button
           onClick={onOpenChat}

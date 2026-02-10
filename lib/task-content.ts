@@ -21,10 +21,6 @@ export const taskContent: Record<string, TaskContent> = {
       "Check your credit score with a free service",
       "Use an affordability calculator to get a rough figure"
     ],
-    partnerLinks: [
-      { name: "Trussle", url: "https://trussle.com", description: "Free mortgage broker" },
-      { name: "MSE Calculator", url: "https://www.moneysavingexpert.com/mortgages/mortgage-affordability-calculator/", description: "Affordability tool" }
-    ],
     notePlaceholder: "Budget: £X. Monthly payment comfortable at £X. Credit score: X."
   },
   "mortgage-in-principle": {
@@ -35,10 +31,6 @@ export const taskContent: Record<string, TaskContent> = {
       "Have your bank statements ready (last 3 months)",
       "Know your deposit amount",
       "Apply online - most take 15-30 minutes"
-    ],
-    partnerLinks: [
-      { name: "Habito", url: "https://www.habito.com", description: "Digital mortgage broker" },
-      { name: "Trussle", url: "https://trussle.com", description: "Free online broker" }
     ],
     notePlaceholder: "Applied with Halifax. Approved for £220k. Broker: Liam @ L&C."
   },
@@ -61,10 +53,6 @@ export const taskContent: Record<string, TaskContent> = {
       "Set up email alerts for your target areas and budget",
       "Download the mobile apps for instant notifications",
       "Register with local estate agents directly too"
-    ],
-    partnerLinks: [
-      { name: "Rightmove", url: "https://www.rightmove.co.uk", description: "UK's biggest property site" },
-      { name: "Zoopla", url: "https://www.zoopla.co.uk", description: "Property search" }
     ],
     notePlaceholder: "Alerts set for: [areas]. Budget: £X-£X. Must-haves: [list]."
   },
@@ -114,10 +102,6 @@ export const taskContent: Record<string, TaskContent> = {
       "Check reviews on Trustpilot and Google",
       "Ask about their average completion time"
     ],
-    partnerLinks: [
-      { name: "Which? Trusted", url: "https://www.which.co.uk/money/mortgages-and-property/conveyancing", description: "Vetted solicitors" },
-      { name: "reallymoving", url: "https://www.reallymoving.com", description: "Compare quotes" }
-    ],
     notePlaceholder: "Using Smith & Partners. Quote: £1,200. Contact: sarah@smithpartners.co.uk"
   },
   "mortgage-application": {
@@ -129,9 +113,6 @@ export const taskContent: Record<string, TaskContent> = {
       "Don't change jobs or take new credit during this time",
       "Respond to any lender queries immediately"
     ],
-    partnerLinks: [
-      { name: "Habito", url: "https://www.habito.com", description: "Digital mortgage broker" }
-    ],
     notePlaceholder: "Lender: [name]. Amount: £X. Rate: X%. Application submitted: [date]."
   },
   "book-survey": {
@@ -142,9 +123,6 @@ export const taskContent: Record<string, TaskContent> = {
       "For older or unusual properties, go for the more detailed option",
       "Book a RICS-qualified surveyor",
       "Read the report carefully and ask questions"
-    ],
-    partnerLinks: [
-      { name: "RICS", url: "https://www.rics.org/find-a-surveyor", description: "Find a surveyor" }
     ],
     notePlaceholder: "RICS Level 2 booked for 15th March. Surveyor: John from ABC Surveys."
   },
@@ -227,10 +205,6 @@ export const taskContent: Record<string, TaskContent> = {
       "Check rebuild cost, not market value",
       "Add contents insurance once you move in"
     ],
-    partnerLinks: [
-      { name: "MoneySuperMarket", url: "https://www.moneysupermarket.com/home-insurance/", description: "Compare quotes" },
-      { name: "Compare the Market", url: "https://www.comparethemarket.com/home-insurance/", description: "Insurance comparison" }
-    ],
     notePlaceholder: "Insurer: [name]. Policy number: [X]. Premium: £X/year. Start date: [date]."
   },
   "completion-date": {
@@ -290,10 +264,6 @@ export const taskContent: Record<string, TaskContent> = {
       "Compare deals on energy and broadband",
       "Set up direct debits for regular payments"
     ],
-    partnerLinks: [
-      { name: "Uswitch", url: "https://www.uswitch.com/gas-electricity/", description: "Compare energy" },
-      { name: "Broadband Choices", url: "https://www.broadbandchoices.co.uk", description: "Compare broadband" }
-    ],
     notePlaceholder: "Electric: [supplier]. Gas: [supplier]. Broadband: [supplier]. Council tax set up: yes/no."
   },
   "council-tax": {
@@ -304,9 +274,6 @@ export const taskContent: Record<string, TaskContent> = {
       "Register as the new occupant",
       "Check if you qualify for any discounts (single person, etc.)",
       "Set up a direct debit"
-    ],
-    partnerLinks: [
-      { name: "GOV.UK", url: "https://www.gov.uk/council-tax", description: "Official info" }
     ],
     notePlaceholder: "Council: [name]. Band: [X]. Monthly payment: £X. Registered: yes/no."
   },
