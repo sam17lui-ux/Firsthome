@@ -9,7 +9,7 @@ import { CreateAccountScreen } from "@/components/create-account-screen";
 import { LoginScreen } from "@/components/login-screen";
 import { FAQsPage, GlossaryPage, CostCalculatorPage, TimelineGuidePage } from "@/components/pages/resource-pages";
 import { AboutPage, ContactPage, PrivacyPolicyPage, TermsOfServicePage, CookiePolicyPage, AccessibilityPage } from "@/components/pages/company-pages";
-import { HouseHuntingGuide, MakingAnOfferGuide, PrepareForLegalFinancialGuide, LegalAndConveyancingGuide, MortgagesGuide, SolicitorsGuide, SurveysGuide, MovingDayGuide } from "@/components/pages/guide-pages";
+import { GuidesOverviewPage, HouseHuntingGuide, MakingAnOfferGuide, PrepareForLegalFinancialGuide, LegalAndConveyancingGuide, MortgagesGuide, SolicitorsGuide, SurveysGuide, MovingDayGuide } from "@/components/pages/guide-pages";
 
 type Screen = 
   | "onboarding" 
@@ -28,6 +28,7 @@ type Screen =
   | "terms"
   | "cookies"
   | "accessibility"
+  | "guides"
   | "guide-house-hunting"
   | "guide-making-an-offer"
   | "guide-prep-legal-financial"
@@ -57,7 +58,7 @@ export default function Home() {
   };
 
   const handleBack = () => {
-    const contentPages = ["faqs", "glossary", "cost-calculator", "timeline", "about", "contact", "privacy", "terms", "cookies", "accessibility", "guide-house-hunting", "guide-making-an-offer", "guide-prep-legal-financial", "guide-legal-and-conveyancing", "guide-mortgages", "guide-solicitors", "guide-surveys", "guide-moving"];
+    const contentPages = ["faqs", "glossary", "cost-calculator", "timeline", "about", "contact", "privacy", "terms", "cookies", "accessibility", "guides", "guide-house-hunting", "guide-making-an-offer", "guide-prep-legal-financial", "guide-legal-and-conveyancing", "guide-mortgages", "guide-solicitors", "guide-surveys", "guide-moving"];
     if (contentPages.includes(currentScreen)) {
       setCurrentScreen(previousScreen === currentScreen ? "tracker" : previousScreen);
     } else if (currentScreen === "login" || currentScreen === "create-account") {
@@ -86,6 +87,9 @@ export default function Home() {
   if (currentScreen === "cookies") return <CookiePolicyPage onBack={handleBack} onNavigate={navigateTo} />;
   if (currentScreen === "accessibility") return <AccessibilityPage onBack={handleBack} onNavigate={navigateTo} />;
   
+  // Guides overview
+  if (currentScreen === "guides") return <GuidesOverviewPage onBack={handleBack} onNavigate={navigateTo} />;
+
   // Guide pages
   if (currentScreen === "guide-house-hunting") return <HouseHuntingGuide onBack={handleBack} onNavigate={navigateTo} />;
   if (currentScreen === "guide-making-an-offer") return <MakingAnOfferGuide onBack={handleBack} onNavigate={navigateTo} />;

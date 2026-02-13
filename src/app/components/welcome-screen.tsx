@@ -23,7 +23,7 @@ export function WelcomeScreen({ onStartNow, onTrackProgress }: WelcomeScreenProp
           {/* Main Headline */}
           <div className="space-y-4 pt-8">
             <h1 className="text-4xl leading-tight text-white">
-              Helping first-time buyers feel confident — not confused
+              Helping first-time buyers feel confident, not confused
             </h1>
             <p className="text-lg text-gray-300 leading-relaxed">
               We simplify your homebuying journey with clear updates, document summaries, and step-by-step guidance.

@@ -54,7 +54,7 @@ const FEATURE_CARDS = [
     icon: Lock,
     iconClass: "text-slate-400",
     title: "Private by design",
-    copy: "Your data stays private. No accounts, no sharing, and no tracking — everything is saved locally.",
+    copy: "Your data stays private. No accounts, no sharing, and no tracking. Everything is saved locally.",
     hasPreview: false,
   },
 ];
@@ -217,7 +217,7 @@ export function HowItWorksScreen({ onBegin, onBack, onOpenLogin, onLogout, onNav
               onClick={onBegin}
               className="w-full h-14 text-lg bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-2xl shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2"
             >
-              Let's begin
+              Continue your home-buying journey
               <ArrowRight className="w-5 h-5" />
             </Button>
           </div>

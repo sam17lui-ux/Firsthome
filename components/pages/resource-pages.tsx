@@ -291,6 +291,13 @@ export function GlossaryPage({ onBack, onNavigate }: PageProps) {
   );
 }
 
+// Parse currency input: digits only, no leading zeros
+function parseCurrencyInput(value: string): number {
+  const digits = value.replace(/\D/g, "");
+  if (digits === "") return 0;
+  return parseInt(digits, 10);
+}
+
 // =====================
 // COST CALCULATOR PAGE
 // =====================
@@ -299,14 +306,29 @@ export function CostCalculatorPage({ onBack, onNavigate }: PageProps) {
   const [deposit, setDeposit] = useState(25000);
   const [isFirstTimeBuyer, setIsFirstTimeBuyer] = useState(true);
 
-  const calculateStampDuty = () => {
-    if (isFirstTimeBuyer && propertyPrice <= 425000) {
-      return 0;
+  const handlePropertyPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = parseCurrencyInput(e.target.value);
+    setPropertyPrice(val);
+  };
+
+  const handleDepositChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = parseCurrencyInput(e.target.value);
+    setDeposit(val);
+  };
+
+  // UK Stamp Duty: England and Northern Ireland. First-time buyers: 0% up to £300,000;
+  // 5% on portion between £300,001 and £500,000. Above £500k, standard rates apply.
+  const getStampDutyIndicative = (): { amount: number; label: string } => {
+    if (propertyPrice <= 0) return { amount: 0, label: "Indicative" };
+    if (isFirstTimeBuyer && propertyPrice <= 300000) {
+      return { amount: 0, label: "Indicative (0% up to £300k for first-time buyers)" };
     }
-    if (isFirstTimeBuyer && propertyPrice <= 625000) {
-      return (propertyPrice - 425000) * 0.05;
+    if (isFirstTimeBuyer && propertyPrice <= 500000) {
+      const portionOver300k = propertyPrice - 300000;
+      const duty = portionOver300k * 0.05;
+      return { amount: duty, label: "Indicative (5% on £300,001 to £500k portion)" };
     }
-    // Standard rates
+    // Standard rates (simplified for indicative purposes)
     let duty = 0;
     if (propertyPrice > 250000) {
       duty += Math.min(propertyPrice - 250000, 675000) * 0.05;
@@ -317,17 +339,12 @@ export function CostCalculatorPage({ onBack, onNavigate }: PageProps) {
     if (propertyPrice > 1500000) {
       duty += (propertyPrice - 1500000) * 0.12;
     }
-    return duty;
+    return { amount: duty, label: "Indicative (standard residential rates)" };
   };
 
-  const stampDuty = calculateStampDuty();
-  const solicitorFees = 1250;
-  const surveyFees = 500;
-  const mortgageFees = 999;
-  const movingCosts = 800;
-  const totalUpfront = deposit + stampDuty + solicitorFees + surveyFees + mortgageFees + movingCosts;
-  const mortgageAmount = propertyPrice - deposit;
-  const ltv = ((mortgageAmount / propertyPrice) * 100).toFixed(0);
+  const stampDutyResult = getStampDutyIndicative();
+  const mortgageAmount = Math.max(0, propertyPrice - deposit);
+  const ltv = propertyPrice > 0 ? ((mortgageAmount / propertyPrice) * 100).toFixed(0) : "0";
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("en-GB", {
@@ -355,7 +372,7 @@ export function CostCalculatorPage({ onBack, onNavigate }: PageProps) {
           <h1 className="text-3xl font-bold text-white">Cost Calculator</h1>
         </div>
         <p className="text-slate-400 mb-8">
-          Estimate the total cost of buying your first home
+          Understand what costs exist and what typically catches you out. These are indicative only, not exact quotes.
         </p>
 
         <div className="grid md:grid-cols-2 gap-6">
@@ -370,9 +387,12 @@ export function CostCalculatorPage({ onBack, onNavigate }: PageProps) {
                   <div className="relative">
                     <PoundSterling className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
                     <Input
-                      type="number"
-                      value={propertyPrice}
-                      onChange={(e) => setPropertyPrice(Number(e.target.value))}
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      value={propertyPrice || ""}
+                      onChange={handlePropertyPriceChange}
+                      placeholder="e.g. 310000"
                       className="pl-11 bg-slate-900/50 border-slate-600 text-white h-12 rounded-xl"
                     />
                   </div>
@@ -383,15 +403,20 @@ export function CostCalculatorPage({ onBack, onNavigate }: PageProps) {
                   <div className="relative">
                     <PoundSterling className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
                     <Input
-                      type="number"
-                      value={deposit}
-                      onChange={(e) => setDeposit(Number(e.target.value))}
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      value={deposit || ""}
+                      onChange={handleDepositChange}
+                      placeholder="e.g. 31000"
                       className="pl-11 bg-slate-900/50 border-slate-600 text-white h-12 rounded-xl"
                     />
                   </div>
-                  <p className="text-slate-500 text-xs mt-1">
-                    {((deposit / propertyPrice) * 100).toFixed(1)}% of property price
-                  </p>
+                  {propertyPrice > 0 && (
+                    <p className="text-slate-500 text-xs mt-1">
+                      {((deposit / propertyPrice) * 100).toFixed(1)}% of property price
+                    </p>
+                  )}
                 </div>
 
                 <div className="flex items-center justify-between pt-2">
@@ -418,37 +443,56 @@ export function CostCalculatorPage({ onBack, onNavigate }: PageProps) {
             <div className="bg-teal-500/10 border border-teal-500/30 rounded-xl p-6">
               <h2 className="text-teal-400 font-semibold mb-4">Estimated Costs</h2>
               
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <div className="flex justify-between text-slate-300">
                   <span>Deposit</span>
                   <span className="text-white font-medium">{formatCurrency(deposit)}</span>
                 </div>
+
+                <div>
+                  <div className="flex justify-between text-slate-300">
+                    <span>Stamp Duty ({stampDutyResult.label})</span>
+                    <span className="text-white font-medium">{formatCurrency(stampDutyResult.amount)}</span>
+                  </div>
+                  <p className="text-slate-500 text-xs mt-1">
+                    Applies in England and Northern Ireland. First-time buyers pay 0% up to £300,000. For properties up to £500,000, 5% applies to the portion between £300,001 and £500,000. Above this, standard residential rates apply.
+                  </p>
+                </div>
+
+                <div>
+                  <div className="text-slate-300 font-medium mb-1">Legal and conveyancing costs</div>
+                  <div className="space-y-1 text-sm">
+                    <div className="flex justify-between text-slate-400">
+                      <span>Legal fees (typical range)</span>
+                      <span className="text-white">£700 to £1,800</span>
+                    </div>
+                    <div className="flex justify-between text-slate-400">
+                      <span>Disbursements (typical range)</span>
+                      <span className="text-white">£300 to £600</span>
+                    </div>
+                  </div>
+                  <p className="text-slate-500 text-xs mt-2">
+                    Costs vary by provider, property type, and complexity. Leasehold properties often require additional legal work, which can add £300 to £800.
+                  </p>
+                </div>
+
                 <div className="flex justify-between text-slate-300">
-                  <span>Stamp Duty {isFirstTimeBuyer && propertyPrice <= 425000 && "(exempt)"}</span>
-                  <span className="text-white font-medium">{formatCurrency(stampDuty)}</span>
+                  <span>Survey (typical range)</span>
+                  <span className="text-white">£300 to £700</span>
                 </div>
                 <div className="flex justify-between text-slate-300">
-                  <span>Solicitor fees (est.)</span>
-                  <span className="text-white font-medium">{formatCurrency(solicitorFees)}</span>
+                  <span>Mortgage fees (typical range)</span>
+                  <span className="text-white">£0 to £2,000</span>
                 </div>
                 <div className="flex justify-between text-slate-300">
-                  <span>Survey (est.)</span>
-                  <span className="text-white font-medium">{formatCurrency(surveyFees)}</span>
-                </div>
-                <div className="flex justify-between text-slate-300">
-                  <span>Mortgage fees (est.)</span>
-                  <span className="text-white font-medium">{formatCurrency(mortgageFees)}</span>
-                </div>
-                <div className="flex justify-between text-slate-300">
-                  <span>Moving costs (est.)</span>
-                  <span className="text-white font-medium">{formatCurrency(movingCosts)}</span>
+                  <span>Moving costs (typical range)</span>
+                  <span className="text-white">£500 to £1,500</span>
                 </div>
                 
                 <div className="border-t border-slate-700 pt-3 mt-3">
-                  <div className="flex justify-between">
-                    <span className="text-white font-semibold">Total Upfront</span>
-                    <span className="text-teal-400 font-bold text-xl">{formatCurrency(totalUpfront)}</span>
-                  </div>
+                  <p className="text-slate-400 text-sm">
+                    Total upfront will depend on your choices. Use this as a guide to understand what costs exist, not as a fixed quote.
+                  </p>
                 </div>
               </div>
             </div>
@@ -475,8 +519,7 @@ export function CostCalculatorPage({ onBack, onNavigate }: PageProps) {
         </div>
 
         <p className="text-slate-500 text-xs mt-6">
-          Note: These are estimates only. Actual costs may vary. Stamp Duty calculations based on current rates as of 2024. 
-          Always get professional advice for your specific situation.
+          These figures are indicative only. Actual costs may vary. Stamp Duty applies in England and Northern Ireland. Always get professional advice for your specific situation.
         </p>
       </div>
       <Footer onNavigate={onNavigate} />

@@ -60,6 +60,11 @@ export function Footer({ onNavigate }: FooterProps) {
             <h3 className="font-semibold text-white mb-4 text-sm uppercase tracking-wide">Guides</h3>
             <ul className="space-y-2.5">
               <li>
+                <a href="#" onClick={handleLinkClick("guides")} className="text-sm hover:text-teal-400 transition-colors">
+                  All guides
+                </a>
+              </li>
+              <li>
                 <a href="#" onClick={handleLinkClick("guide-house-hunting")} className="text-sm hover:text-teal-400 transition-colors">
                   House Hunting
                 </a>

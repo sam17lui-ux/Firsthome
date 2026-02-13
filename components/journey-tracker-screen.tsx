@@ -588,13 +588,13 @@ export function JourneyTrackerScreen({ onBack, onOpenChat, onNavigate, onOpenLog
           <div>
             {calculateProgress() === 0 ? (
               <>
-                <h3 className="text-lg text-white font-medium">Getting started</h3>
-                <p className="text-sm text-gray-400">This is where most first-time buyers begin.</p>
+                <h3 className="text-lg text-white font-medium">Your journey starts here.</h3>
+                <p className="text-sm text-gray-400">Every first-time buyer starts somewhere. Let&apos;s begin.</p>
               </>
             ) : (
               <>
                 <h3 className="text-lg text-white font-medium">You&apos;re {calculateProgress()}% there</h3>
-                <p className="text-sm text-gray-400">Keep going — you&apos;ve got this</p>
+                <p className="text-sm text-gray-400">Keep going, you&apos;ve got this</p>
               </>
             )}
           </div>
@@ -602,12 +602,14 @@ export function JourneyTrackerScreen({ onBack, onOpenChat, onNavigate, onOpenLog
             {calculateProgress() === 100 ? "🎉" : calculateProgress() > 50 ? "💪" : calculateProgress() === 0 ? "" : "👏"}
           </span>
         </div>
-        <div className="w-full bg-slate-700 rounded-full h-3">
-          <div
-            className="bg-gradient-to-r from-blue-500 to-purple-600 h-3 rounded-full transition-all duration-500 shadow-lg shadow-blue-500/30"
-            style={{ width: `${calculateProgress()}%` }}
-          />
-        </div>
+        {calculateProgress() > 0 && (
+          <div className="w-full bg-slate-700 rounded-full h-3 mt-4">
+            <div
+              className="bg-gradient-to-r from-blue-500 to-purple-600 h-3 rounded-full transition-all duration-500 shadow-lg shadow-blue-500/30"
+              style={{ width: `${calculateProgress()}%` }}
+            />
+          </div>
+        )}
       </div>
 
       <div className="space-y-4">

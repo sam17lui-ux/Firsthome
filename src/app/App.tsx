@@ -4,7 +4,7 @@ import { HowItWorksScreen } from "@/components/how-it-works-screen";
 import { ChatAssistantScreen } from "@/components/chat-assistant-screen";
 import { JourneyTrackerScreen } from "@/components/journey-tracker-screen";
 import { AuthModal } from "@/components/auth-modal";
-import { HouseHuntingGuide, MakingAnOfferGuide, PrepareForLegalFinancialGuide, LegalAndConveyancingGuide, MortgagesGuide, SolicitorsGuide, SurveysGuide, MovingDayGuide } from "@/components/pages/guide-pages";
+import { GuidesOverviewPage, HouseHuntingGuide, MakingAnOfferGuide, PrepareForLegalFinancialGuide, LegalAndConveyancingGuide, MortgagesGuide, SolicitorsGuide, SurveysGuide, MovingDayGuide } from "@/components/pages/guide-pages";
 import { FAQsPage, GlossaryPage, CostCalculatorPage, TimelineGuidePage } from "@/components/pages/resource-pages";
 import { AboutPage, ContactPage, PrivacyPolicyPage, TermsOfServicePage, CookiePolicyPage, AccessibilityPage } from "@/components/pages/company-pages";
 import { AccountScreen } from "@/components/account-screen";
@@ -15,6 +15,7 @@ type Screen =
   | "how-it-works"
   | "chat"
   | "tracker"
+  | "guides"
   | "guide-house-hunting"
   | "guide-making-an-offer"
   | "guide-prep-legal-financial"
@@ -71,7 +72,7 @@ export default function App() {
   };
 
   const handleBack = () => {
-    const contentPages: Screen[] = ["faqs", "glossary", "cost-calculator", "timeline", "about", "contact", "privacy", "terms", "cookies", "accessibility", "account", "guide-house-hunting", "guide-making-an-offer", "guide-prep-legal-financial", "guide-legal-and-conveyancing", "guide-mortgages", "guide-solicitors", "guide-surveys", "guide-moving"];
+    const contentPages: Screen[] = ["faqs", "glossary", "cost-calculator", "timeline", "about", "contact", "privacy", "terms", "cookies", "accessibility", "account", "guides", "guide-house-hunting", "guide-making-an-offer", "guide-prep-legal-financial", "guide-legal-and-conveyancing", "guide-mortgages", "guide-solicitors", "guide-surveys", "guide-moving"];
     if (contentPages.includes(currentScreen)) {
       setCurrentScreen(previousScreen === currentScreen ? "tracker" : previousScreen);
     } else {
@@ -94,6 +95,9 @@ export default function App() {
     setUserEmail(null);
     setUserId(null);
   };
+
+  // Guides overview
+  if (currentScreen === "guides") return <GuidesOverviewPage onBack={handleBack} onNavigate={navigateTo} />;
 
   // Guide pages
   if (currentScreen === "guide-house-hunting") return <HouseHuntingGuide onBack={handleBack} onNavigate={navigateTo} />;

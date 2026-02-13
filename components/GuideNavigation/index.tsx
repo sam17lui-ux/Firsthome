@@ -23,7 +23,7 @@ export function GuideNavigation({ previous, next, onNavigate }: GuideNavigationP
           >
             <ArrowLeft className="w-4 h-4 shrink-0 group-hover:-translate-x-0.5 transition-transform" aria-hidden />
             <span className="text-sm">
-              <span className="text-slate-500">Previous step:</span> {previous.title}
+              <span className="text-slate-500">Previous:</span> {previous.title}
             </span>
           </button>
         ) : (
@@ -36,7 +36,7 @@ export function GuideNavigation({ previous, next, onNavigate }: GuideNavigationP
             className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-left sm:text-right group sm:ml-auto"
           >
             <span className="text-sm">
-              <span className="text-slate-500">Next step:</span> {next.title}
+              <span className="text-slate-500">See what happens next:</span> {next.title}
             </span>
             <ArrowRight className="w-4 h-4 shrink-0 group-hover:translate-x-0.5 transition-transform" aria-hidden />
           </button>
