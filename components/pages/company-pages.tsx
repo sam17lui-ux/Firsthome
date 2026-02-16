@@ -96,13 +96,39 @@ export function AboutPage({ onBack, onNavigate }: PageProps) {
 
           <h2 className="text-xl font-semibold text-white mb-4">Our Story</h2>
           <p className="text-slate-300 mb-4 leading-relaxed">
-            FirstHome started in 2024 when I spent 6 months buying my first flat and 
-            documented everything I learned along the way. What started as personal notes 
-            became a resource for friends, and eventually grew into this platform.
+            FirstHome started in 2025 after I experienced first-hand how fragmented and confusing the home-buying process can be.
+          </p>
+          <p className="text-slate-300 mb-4 leading-relaxed">
+            Buying your first home is likely one of the biggest financial decisions you will ever make. Yet the information is scattered. Advice lives across government websites, forums, brokers, estate agents, and word of mouth. If you do not have friends or family to lean on, it can feel overwhelming.
+          </p>
+          <p className="text-slate-300 mb-4 leading-relaxed">
+            There are multiple parties involved. Communication is not always clear. Updates can be slow. Often, you are left unsure what is happening behind the scenes.
+          </p>
+          <p className="text-slate-300 mb-8 leading-relaxed">
+            I believed it should not feel this way.
+          </p>
+
+          <h2 className="text-xl font-semibold text-white mb-4">My Mission</h2>
+          <p className="text-slate-300 mb-4 leading-relaxed">
+            My mission is simple.
+          </p>
+          <p className="text-slate-300 mb-4 leading-relaxed">
+            To create a single, clear hub for first-time buyers.
+          </p>
+          <p className="text-slate-300 mb-3 leading-relaxed">
+            A place where you can:
+          </p>
+          <ul className="list-none space-y-2 mb-4">
+            <li className="text-slate-300 flex items-start gap-2"><span className="text-teal-400">•</span><span>See exactly where you are in the process</span></li>
+            <li className="text-slate-300 flex items-start gap-2"><span className="text-teal-400">•</span><span>Understand what happens next</span></li>
+            <li className="text-slate-300 flex items-start gap-2"><span className="text-teal-400">•</span><span>Track your progress in one place</span></li>
+            <li className="text-slate-300 flex items-start gap-2"><span className="text-teal-400">•</span><span>Turn industry jargon into plain English</span></li>
+          </ul>
+          <p className="text-slate-300 mb-4 leading-relaxed">
+            FirstHome exists to give buyers clarity and confidence during one of the most important purchases of their lives.
           </p>
           <p className="text-slate-300 leading-relaxed">
-            Today, FirstHome helps first-time buyers across the UK navigate their way to 
-            homeownership with confidence.
+            It does not replace your solicitor or broker. It helps you understand them.
           </p>
         </div>
       </div>

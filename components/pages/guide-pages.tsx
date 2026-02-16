@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react"
+import React, { useState } from "react"
 
-import { ArrowLeft, ArrowRight, Home, Search, FileText, ClipboardCheck, Truck, CheckCircle2, Handshake, Scale, Wallet, AlertTriangle } from "lucide-react";
+import { ArrowLeft, ArrowRight, Home, Search, FileText, ClipboardCheck, Truck, CheckCircle2, Handshake, Scale, Wallet, AlertTriangle, Calculator, ListChecks, Eye, TrendingUp, AlertCircle, HelpCircle, Clock, FolderOpen, CalendarCheck, Zap, ChevronDown } from "lucide-react";
 import { Footer } from "@/components/footer";
 import { ChatEntryPoint } from "@/components/chat-entry-point";
 import { GuideNavigation } from "@/components/GuideNavigation";
@@ -110,6 +110,17 @@ interface GuideSection {
   bullets?: string[];
   tips?: string[];
   whyThisMatters?: string;
+  icon?: React.ElementType;
+}
+
+interface AdditionalSection {
+  title: string;
+  icon?: React.ElementType;
+  sectionNumber: number;
+  content: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  scrollId?: string;
 }
 
 interface GuideLayoutProps {
@@ -119,8 +130,10 @@ interface GuideLayoutProps {
   intro: string;
   reassurance?: string;
   atAGlance?: string[];
+  contentAfterAtAGlance?: React.ReactNode;
   sections: GuideSection[];
-      commonQuestions?: { q: string; a: string }[];
+  additionalSections?: AdditionalSection[];
+  commonQuestions?: { q: string; a: string }[];
   whatCatchesPeopleOut?: string[];
   onBack: () => void;
   onNavigate: (page: string) => void;
@@ -136,6 +149,35 @@ function HelperNote({ children }: { children: React.ReactNode }) {
   );
 }
 
+function MiniAccordionGroup({ items }: { items: { title: string; content: React.ReactNode }[] }) {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  return (
+    <div className="space-y-2">
+      {items.map((item, i) => (
+        <div key={i} className="rounded-lg border border-slate-700/50 bg-slate-800/40 overflow-hidden">
+          <button
+            type="button"
+            onClick={() => setOpenIndex(openIndex === i ? null : i)}
+            className="w-full flex items-center justify-between gap-2 px-4 py-3 text-left hover:bg-slate-800/60 transition-colors"
+            aria-expanded={openIndex === i}
+          >
+            <span className="font-medium text-slate-200 text-sm">{item.title}</span>
+            <ChevronDown
+              className={`w-4 h-4 text-slate-500 shrink-0 transition-transform duration-150 ${openIndex === i ? "rotate-180" : ""}`}
+              aria-hidden
+            />
+          </button>
+          {openIndex === i && (
+            <div className="px-4 pb-4 pt-0 border-t border-slate-700/40">
+              {item.content}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function GuideLayout({
   title,
   icon: Icon,
@@ -143,7 +185,9 @@ function GuideLayout({
   intro,
   reassurance,
   atAGlance,
+  contentAfterAtAGlance,
   sections,
+  additionalSections,
   commonQuestions,
   whatCatchesPeopleOut,
   onBack,
@@ -218,6 +262,8 @@ function GuideLayout({
           </div>
         )}
 
+        {contentAfterAtAGlance}
+
         <div className="space-y-4">
           {sections.map((section, index) => (
             <GuideAccordion
@@ -225,6 +271,7 @@ function GuideLayout({
               id={`section-${index}`}
               title={section.title}
               sectionNumber={index + 1}
+              icon={section.icon}
             >
               <p className="text-slate-300 leading-relaxed mb-4">{section.content}</p>
               {(section.bullets || section.tips) && (
@@ -242,26 +289,45 @@ function GuideLayout({
               )}
             </GuideAccordion>
           ))}
+          {additionalSections?.map((section, index) => (
+            <GuideAccordion
+              key={`additional-${index}`}
+              id={`section-additional-${index}`}
+              title={section.title}
+              sectionNumber={section.sectionNumber}
+              icon={section.icon}
+              open={section.open}
+              onOpenChange={section.onOpenChange}
+              scrollId={section.scrollId}
+            >
+              {section.content}
+            </GuideAccordion>
+          ))}
         </div>
 
         {whatCatchesPeopleOut && whatCatchesPeopleOut.length > 0 && (
-          <section className="mt-8 mb-6 rounded-xl border-2 border-slate-600/60 bg-slate-800/60 p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <AlertTriangle className="w-5 h-5 text-slate-400 shrink-0" strokeWidth={1.5} aria-hidden />
-              <h2 className="text-xl font-semibold text-white">What catches people out at this stage</h2>
+          <section className="mt-8 mb-6 rounded-xl border border-slate-700/60 bg-slate-800/50 overflow-hidden flex">
+            <div className="w-[4px] min-h-full shrink-0 rounded-r bg-gradient-to-b from-purple-500/60 via-indigo-500/50 to-blue-500/60" aria-hidden />
+            <div className="flex-1 p-4 md:p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="w-7 h-7 shrink-0 rounded-lg bg-purple-500/[0.07] flex items-center justify-center">
+                  <AlertCircle className="w-[18px] h-[18px] text-slate-400" strokeWidth={1.5} aria-hidden />
+                </span>
+                <h2 className="text-xl font-semibold text-white">What catches people out at this stage</h2>
+              </div>
+              <ul className="space-y-3">
+                {whatCatchesPeopleOut.map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-slate-300">
+                    <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <ul className="space-y-3">
-              {whatCatchesPeopleOut.map((item, i) => (
-                <li key={i} className="flex items-start gap-2 text-slate-300">
-                  <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
           </section>
         )}
 
-        {commonQuestions.length > 0 && (
+        {commonQuestions && commonQuestions.length > 0 && (
         <section className="mt-8 mb-8">
           <h2 className="text-xl font-semibold text-white mb-4">Common questions at this stage</h2>
           <div className="space-y-2">
@@ -270,6 +336,7 @@ function GuideLayout({
                 key={i}
                 id={`faq-${i}`}
                 title={item.q}
+                icon={HelpCircle}
               >
                 <p className="text-slate-300 text-sm leading-relaxed">{item.a}</p>
               </GuideAccordion>
@@ -324,6 +391,7 @@ export function HouseHuntingGuide({ onBack, onNavigate }: PageProps) {
       sections={[
         {
           title: "Know what you can afford",
+          icon: Calculator,
           content: "Before you book viewings, understand what you can realistically afford, not just the asking price. The listing price is not the full picture. Buying a home comes with ongoing monthly costs too.",
           bullets: [
             "Get a mortgage in principle to understand your likely budget",
@@ -334,21 +402,25 @@ export function HouseHuntingGuide({ onBack, onNavigate }: PageProps) {
         },
         {
           title: "Must-haves vs nice-to-haves",
+          icon: ListChecks,
           content: "It is easy to want everything, but very few first homes tick every box. Focus on must-haves: what works for your daily life (location, size, layout), what is affordable long-term, and what suits your plans over the next few years. Nice-to-haves might include a big garden, a brand-new kitchen, or a home office.",
           whyThisMatters: "You can often change a kitchen later. You cannot change the location.",
         },
         {
           title: "Viewing properties",
+          icon: Eye,
           content: "Viewing homes is exciting, but first viewings are rarely the one. Take your time and stay objective. Go prepared: ask about recent repairs, check the age of key systems (boiler, electrics), and ask about the neighbourhood and nearby developments. Watch out for damp smells, large cracks, or fresh paint that might hide problem areas.",
           whyThisMatters: "If something feels rushed or brushed off, it is okay to walk away.",
         },
         {
           title: "Making comparisons",
+          icon: Scale,
           content: "After a few viewings, homes can start to blur together. Make short notes immediately after each viewing. Compare homes based on facts, not first impressions. Revisit listings later; they often look different once emotions settle.",
           whyThisMatters: "Many buyers only realise what matters after comparing a few homes side by side.",
         },
         {
           title: "Market reality",
+          icon: TrendingUp,
           content: "In busy areas you may miss out on homes you like, need to view quickly, or compete with other buyers. This is frustrating, but normal. Missing out does not mean you failed. It happens to most buyers at some point.",
         },
       ]}
@@ -390,6 +462,7 @@ export function MakingAnOfferGuide({ onBack, onNavigate }: PageProps) {
       sections={[
         {
           title: "What making an offer means",
+          icon: Handshake,
           content: "Making an offer is simply telling the seller what you are willing to pay. It is the start of a conversation, not a commitment.",
           bullets: [
             "Offers are usually made through the estate agent",
@@ -399,21 +472,25 @@ export function MakingAnOfferGuide({ onBack, onNavigate }: PageProps) {
         },
         {
           title: "What you will usually be asked for",
+          icon: ClipboardCheck,
           content: "When you make an offer, the estate agent may ask for basic information such as proof of deposit, mortgage in principle, and your position (for example, first-time buyer or chain-free). This is normal and does not mean anything has been agreed yet.",
           whyThisMatters: "This helps the seller assess how proceedable you are.",
         },
         {
           title: "If your offer is accepted",
+          icon: CheckCircle2,
           content: "If the seller accepts, the property is usually marked as sold subject to contract. The legal process is about to begin, but things can still change. You will be asked to instruct a solicitor, surveys will be arranged, and legal checks and searches will begin.",
           whyThisMatters: "You might not hear much for a while. That is normal.",
         },
         {
           title: "If your offer is not accepted",
+          icon: AlertCircle,
           content: "Having an offer rejected is disappointing, but very common. Most buyers miss out on at least one property before succeeding. Sellers may receive multiple offers. Timing and circumstances often matter as much as price. You can choose to increase your offer, walk away, or keep looking.",
           whyThisMatters: "It does not mean you did anything wrong.",
         },
         {
           title: "Offers can fall through",
+          icon: AlertTriangle,
           content: "Even after an offer is accepted, sales can fall through. It is disappointing, but it happens for many reasons outside your control.",
         },
       ]}
@@ -435,6 +512,69 @@ export function MakingAnOfferGuide({ onBack, onNavigate }: PageProps) {
 // LEGAL & CONVEYANCING GUIDE
 // =====================
 export function LegalAndConveyancingGuide({ onBack, onNavigate }: PageProps) {
+  const [costSectionOpen, setCostSectionOpen] = useState(false);
+  const scrollToCostSection = () => {
+    setCostSectionOpen(true);
+    setTimeout(() => document.getElementById("section-legal-costs")?.scrollIntoView({ behavior: "smooth" }), 100);
+  };
+
+  const legalCostsSectionContent = (
+    <div className="space-y-4">
+      <MiniAccordionGroup
+        items={[
+          {
+            title: "What you are paying your solicitor for",
+            content: (
+              <>
+                <ul className="space-y-2 text-slate-300 text-sm">
+                  <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" /><span>Reviewing contracts</span></li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" /><span>Raising and responding to enquiries</span></li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" /><span>Managing searches</span></li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" /><span>Liaising with your lender</span></li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" /><span>Handling exchange and completion</span></li>
+                </ul>
+                <p className="mt-3 text-slate-400 text-sm">Often quoted as a fixed fee, but always check what is included.</p>
+              </>
+            ),
+          },
+          {
+            title: "Disbursements",
+            content: (
+              <>
+                <p className="text-slate-300 text-sm mb-3">Disbursements are third-party payments made on your behalf.</p>
+                <ul className="space-y-2 text-slate-300 text-sm">
+                  <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" /><span>Local authority searches</span></li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" /><span>Environmental and drainage searches</span></li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" /><span>Land Registry fee</span></li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" /><span>Bankruptcy and ID checks</span></li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" /><span>Bank transfer fees</span></li>
+                </ul>
+                <p className="mt-3 text-slate-400 text-sm">These vary by property and council.</p>
+              </>
+            ),
+          },
+          {
+            title: "What increases costs",
+            content: (
+              <>
+                <p className="text-slate-300 text-sm mb-3">Costs may rise if:</p>
+                <ul className="space-y-2 text-slate-300 text-sm">
+                  <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" /><span>The property is leasehold</span></li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" /><span>You are using a Lifetime ISA</span></li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" /><span>There is a gifted deposit</span></li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" /><span>It is shared ownership</span></li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" /><span>A management pack is required</span></li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" /><span>An indemnity policy is needed</span></li>
+                </ul>
+                <p className="mt-3 text-slate-500 text-xs">Many fee surprises come from leasehold packs and indemnity policies.</p>
+              </>
+            ),
+          },
+        ]}
+      />
+    </div>
+  );
+
   return (
     <GuideLayout
       title="Legal & conveyancing"
@@ -448,6 +588,29 @@ export function LegalAndConveyancingGuide({ onBack, onNavigate }: PageProps) {
         "Slow progress is usual and does not mean a problem",
         "Do not book removals until after exchange",
       ]}
+      contentAfterAtAGlance={
+        <div className="mb-8 rounded-xl border border-slate-600/50 bg-slate-800/50 p-5">
+          <h2 className="text-base font-semibold text-white mb-3">Legal costs at this stage</h2>
+          <p className="text-slate-200 font-medium text-sm mb-1">Most buyers spend between £1,200 and £2,500 in total at this stage.</p>
+          <p className="text-slate-500 text-xs mb-4">Exact costs depend on the property type and complexity.</p>
+          <p className="text-slate-400 text-sm font-medium mb-2">What this usually includes:</p>
+          <ul className="space-y-2 text-slate-300 text-sm mb-4">
+            <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" /><span>Solicitor's legal fee: £900 to £1,800</span></li>
+            <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" /><span>Property searches: £250 to £450</span></li>
+            <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" /><span>Land Registry fee: £20 to £910 (based on property price)</span></li>
+            <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" /><span>Bank transfer fees: £20 to £45</span></li>
+            <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" /><span>Extra leasehold or shared ownership work (if applicable): £200 to £500</span></li>
+          </ul>
+          <p className="text-slate-500 text-xs mb-4">If your quote is far outside this range, ask your solicitor what is increasing the cost.</p>
+          <button
+            type="button"
+            onClick={scrollToCostSection}
+            className="text-sm text-teal-400 hover:text-teal-300 transition-colors"
+          >
+            View what this includes →
+          </button>
+        </div>
+      }
       onBack={onBack}
       onNavigate={onNavigate}
       previous={{ title: "Prepare for Legal & Financial", href: "guide-prep-legal-financial" }}
@@ -455,6 +618,7 @@ export function LegalAndConveyancingGuide({ onBack, onNavigate }: PageProps) {
       sections={[
         {
           title: "What conveyancing is",
+          icon: Scale,
           content: "Conveyancing is the legal work that transfers ownership of a property from the seller to you. Your solicitor handles this process on your behalf.",
           bullets: [
             "Checking the legal title",
@@ -465,11 +629,13 @@ export function LegalAndConveyancingGuide({ onBack, onNavigate }: PageProps) {
         },
         {
           title: "Searches and checks",
+          icon: Search,
           content: "Your solicitor will order searches (such as local authority, water and drainage, and environmental) to uncover information about the property and the local area. Searches can take several weeks, depending on the local council.",
           whyThisMatters: "These checks protect you from unknown issues that could affect the property.",
         },
         {
           title: "Surveys and enquiries",
+          icon: ClipboardCheck,
           content: (
             <>
               While legal checks are ongoing, surveys are usually carried out. See our{" "}
@@ -482,12 +648,25 @@ export function LegalAndConveyancingGuide({ onBack, onNavigate }: PageProps) {
         },
         {
           title: "Why this stage feels slow",
+          icon: Clock,
           content: "Many different parties are involved: solicitors, surveyors, and local authorities. Progress depends on responses from several organisations. Slow progress is usual here. It does not mean there is a problem.",
           whyThisMatters: "Patience at this stage is normal and expected.",
         },
         {
           title: "Things can still change",
+          icon: AlertTriangle,
           content: "Until contracts are exchanged, either side can still withdraw. This uncertainty is frustrating, but it is part of the process. Try not to make irreversible plans until exchange has taken place.",
+        },
+      ]}
+      additionalSections={[
+        {
+          title: "What legal costs actually include",
+          icon: Wallet,
+          sectionNumber: 6,
+          content: legalCostsSectionContent,
+          open: costSectionOpen,
+          onOpenChange: setCostSectionOpen,
+          scrollId: "section-legal-costs",
         },
       ]}
       whatCatchesPeopleOut={[
@@ -528,6 +707,7 @@ export function PrepareForLegalFinancialGuide({ onBack, onNavigate }: PageProps)
       sections={[
         {
           title: "Mortgage in principle",
+          icon: Calculator,
           content: "Get a mortgage in principle before house hunting so you know your budget. After your offer is accepted, you will make a full application. Lenders typically offer 4 to 4.5 times your annual income, depending on your outgoings and credit score. A larger deposit usually means better rates.",
           bullets: [
             "Use online calculators for initial estimates",
@@ -538,6 +718,7 @@ export function PrepareForLegalFinancialGuide({ onBack, onNavigate }: PageProps)
         },
         {
           title: "Choosing a solicitor",
+          icon: Scale,
           content: "Your solicitor (or conveyancer) handles all the legal work: property searches, contract review, enquiries, and transferring ownership. Get quotes from three to four solicitors and check they are on your lender approved panel.",
           bullets: [
             "Ask about typical response times",
@@ -548,6 +729,7 @@ export function PrepareForLegalFinancialGuide({ onBack, onNavigate }: PageProps)
         },
         {
           title: "Understanding the costs",
+          icon: Wallet,
           content: "Beyond the deposit, budget for solicitor fees, searches, survey, stamp duty, and mortgage arrangement fees. Sometimes a higher rate with lower fees works out cheaper overall. Calculate the total cost, not just the mortgage rate.",
           bullets: [
             "Ask about fee-free mortgage options",
@@ -558,6 +740,7 @@ export function PrepareForLegalFinancialGuide({ onBack, onNavigate }: PageProps)
         },
         {
           title: "Getting organised",
+          icon: FolderOpen,
           content: "The legal stage works best when you respond quickly to requests. Have your ID, proof of address, and source of funds ready. Keep a record of all correspondence and ask your solicitor to explain anything you do not understand.",
           bullets: [
             "Respond promptly when your solicitor asks for information",
@@ -598,6 +781,7 @@ export function MortgagesGuide({ onBack, onNavigate }: PageProps) {
       sections={[
         {
           title: "Types of Mortgage",
+          icon: Home,
           content: "Fixed-rate mortgages lock in your interest rate for a set period (typically 2-5 years), giving you payment certainty. Variable rates can go up or down with the market. Tracker mortgages follow the Bank of England base rate, while standard variable rates are set by your lender.",
           tips: [
             "Fixed rates offer certainty - popular for first-time buyers",
@@ -607,6 +791,7 @@ export function MortgagesGuide({ onBack, onNavigate }: PageProps) {
         },
         {
           title: "How Much Can You Borrow?",
+          icon: Calculator,
           content: "Lenders typically offer 4-4.5 times your annual income, but this depends on your outgoings, credit score, deposit size, and the lender's criteria. A larger deposit usually means better rates and more borrowing options.",
           tips: [
             "Use online calculators for initial estimates",
@@ -616,6 +801,7 @@ export function MortgagesGuide({ onBack, onNavigate }: PageProps) {
         },
         {
           title: "The Application Process",
+          icon: FileText,
           content: "After your offer is accepted, you'll make a full mortgage application. You'll need to provide proof of income (payslips, tax returns), bank statements, ID, and details of your outgoings. The lender will value the property and conduct affordability checks.",
           tips: [
             "Gather your documents early to avoid delays",
@@ -625,6 +811,7 @@ export function MortgagesGuide({ onBack, onNavigate }: PageProps) {
         },
         {
           title: "Mortgage Fees",
+          icon: Wallet,
           content: "Beyond the interest rate, consider arrangement fees (£0-£2,000), valuation fees (often included), and early repayment charges if you pay off early or remortgage during the fixed period. Sometimes a higher rate with lower fees works out cheaper overall.",
           tips: [
             "Calculate the total cost over the mortgage term, not just the rate",
@@ -654,6 +841,7 @@ export function SolicitorsGuide({ onBack, onNavigate }: PageProps) {
       sections={[
         {
           title: "What Does a Solicitor Do?",
+          icon: Scale,
           content: "Your solicitor conducts property searches, reviews the contract, raises enquiries with the seller's solicitor, handles the transfer of funds, and registers you as the new owner. They protect your legal interests throughout the transaction.",
           tips: [
             "Get quotes from 3-4 solicitors before choosing",
@@ -663,6 +851,7 @@ export function SolicitorsGuide({ onBack, onNavigate }: PageProps) {
         },
         {
           title: "Property Searches",
+          icon: Search,
           content: "Searches check for issues that could affect the property. Local authority searches reveal planning applications and road schemes. Environmental searches check for flood risk or contamination. Water and drainage searches confirm the property's connections.",
           tips: [
             "Searches typically cost £250-£400 in total",
@@ -672,6 +861,7 @@ export function SolicitorsGuide({ onBack, onNavigate }: PageProps) {
         },
         {
           title: "Contracts and Enquiries",
+          icon: FileText,
           content: "Your solicitor reviews the contract and property information provided by the seller. They'll raise enquiries about anything unclear or concerning. This process can take several weeks as questions go back and forth between solicitors.",
           tips: [
             "Respond quickly when your solicitor asks for information",
@@ -681,6 +871,7 @@ export function SolicitorsGuide({ onBack, onNavigate }: PageProps) {
         },
         {
           title: "Exchange and Completion",
+          icon: CheckCircle2,
           content: "At exchange, contracts are signed and you pay your deposit (usually 10%). The sale becomes legally binding - neither party can back out without penalty. Completion is when the remaining money transfers and you get the keys.",
           tips: [
             "Make sure you have buildings insurance from exchange",
@@ -717,6 +908,7 @@ export function SurveysGuide({ onBack, onNavigate }: PageProps) {
       sections={[
         {
           title: "Why get a survey",
+          icon: ClipboardCheck,
           content: "The mortgage lender valuation only confirms the property is worth the loan amount. It does not check for defects. A proper survey inspects the property condition and can identify problems with the structure, roof, electrics, plumbing, and more.",
           bullets: [
             "A survey can save you thousands in unexpected repairs",
@@ -727,6 +919,7 @@ export function SurveysGuide({ onBack, onNavigate }: PageProps) {
         },
         {
           title: "Types of survey",
+          icon: FileText,
           content: "Level 1 (Condition Report, £300+) is basic, suitable for newer properties. Level 2 (HomeBuyer Report, £400 to £600) is the most popular, covering most conventional properties. Level 3 (Building Survey, £600+) is comprehensive, best for older, larger, or unusual properties.",
           bullets: [
             "For most first-time buyers, a Level 2 survey is appropriate",
@@ -737,6 +930,7 @@ export function SurveysGuide({ onBack, onNavigate }: PageProps) {
         },
         {
           title: "Understanding the results",
+          icon: Eye,
           content: "Surveys use a traffic light system: green (no immediate action), amber (defects requiring repair), and red (serious issues needing urgent attention). Do not panic if there are amber items; most properties have some issues.",
           bullets: [
             "Focus on red and amber items first",
@@ -746,6 +940,7 @@ export function SurveysGuide({ onBack, onNavigate }: PageProps) {
         },
         {
           title: "What to do if problems are found",
+          icon: AlertTriangle,
           content: "You have options: negotiate a price reduction to cover repair costs, ask the seller to fix issues before completion, get specialist reports for specific concerns (for example, damp or electrics), or walk away if issues are too severe.",
           bullets: [
             "Use survey findings as negotiation leverage",
@@ -792,6 +987,7 @@ export function MovingDayGuide({ onBack, onNavigate }: PageProps) {
       sections={[
         {
           title: "Before moving day",
+          icon: CalendarCheck,
           content: "Start planning at least four weeks before completion. Get quotes from removal companies, start decluttering, and begin packing non-essential items. Notify important contacts of your change of address and set up mail redirection with Royal Mail.",
           bullets: [
             "Book removals early; good companies get booked up",
@@ -802,6 +998,7 @@ export function MovingDayGuide({ onBack, onNavigate }: PageProps) {
         },
         {
           title: "Utilities and services",
+          icon: Zap,
           content: "Contact utility providers to close old accounts and open new ones. Take meter readings at both properties on moving day. Set up broadband in advance as it can take two weeks to activate. Update your address with your bank, employer, DVLA, and GP.",
           bullets: [
             "Photograph meter readings for your records",
@@ -811,6 +1008,7 @@ export function MovingDayGuide({ onBack, onNavigate }: PageProps) {
         },
         {
           title: "Moving day checklist",
+          icon: ClipboardCheck,
           content: "On the day, keep important documents, valuables, and essentials in a separate bag. Do a final check of your old property before leaving. Take meter readings, collect all keys, and lock up properly. At the new property, check everything works before the removers leave.",
           bullets: [
             "Pack a first night box with essentials",
@@ -821,6 +1019,7 @@ export function MovingDayGuide({ onBack, onNavigate }: PageProps) {
         },
         {
           title: "Settling in",
+          icon: Home,
           content: "Once you are in, locate the stopcock, fuse box, and gas meter. Test smoke alarms and consider changing the locks. Take your time unpacking; focus on essential rooms first. Introduce yourself to neighbours when you are ready.",
           bullets: [
             "Find the stopcock before you need it in an emergency",
