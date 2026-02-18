@@ -44,13 +44,6 @@ export function AboutPage({ onBack, onNavigate }: PageProps) {
             </p>
           </div>
 
-          <h2 className="text-xl font-semibold text-white mb-4">Our Mission</h2>
-          <p className="text-slate-300 mb-8 leading-relaxed">
-            I believe everyone deserves to understand the homebuying process without needing 
-            a law degree or a finance background. My mission is simple: to demystify buying 
-            your first home and give you the confidence to navigate every step of the journey.
-          </p>
-
           <div className="grid md:grid-cols-2 gap-6 mb-8">
             <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
               <div className="w-12 h-12 bg-teal-500/20 rounded-xl flex items-center justify-center mb-4">
