@@ -177,12 +177,16 @@ export function ChatAssistantScreen({
                     <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:300ms]" />
                   </span>
                 ) : (
-                  <p className="text-[15px] leading-relaxed whitespace-pre-wrap">
-                    {message.text}
-                    {message.isStreaming && (
-                      <span className="inline-block w-0.5 h-4 bg-gray-400 ml-0.5 animate-pulse align-middle" />
-                    )}
-                  </p>
+                  <div className="text-[15px] leading-relaxed space-y-2">
+                    {message.text.split(/\n\n+/).map((para, i, arr) => (
+                      <p key={i} className="whitespace-pre-wrap">
+                        {para}
+                        {message.isStreaming && i === arr.length - 1 && (
+                          <span className="inline-block w-0.5 h-4 bg-gray-400 ml-0.5 animate-pulse align-middle" />
+                        )}
+                      </p>
+                    ))}
+                  </div>
                 )}
               </div>
             </div>
