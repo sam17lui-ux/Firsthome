@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { ArrowLeft, Send, TrendingUp, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { sendMessage, type ChatMessage } from "@/lib/claude-chat";
 
 interface ChatAssistantScreenProps {
   onBack: () => void;
@@ -15,6 +16,7 @@ interface Message {
   sender: "user" | "assistant";
   text: string;
   timestamp: Date;
+  isStreaming?: boolean;
 }
 
 const SUGGESTED_PROMPTS = [
@@ -23,17 +25,6 @@ const SUGGESTED_PROMPTS = [
   "How long does mortgage approval actually take?",
   "What are searches and why do they matter?",
 ];
-
-const ASSISTANT_RESPONSES: Record<string, string> = {
-  "What happens after the survey?":
-    "Right, so once the survey's done, you'll get a report from the surveyor. If they find any issues (damp, structural problems, dodgy electrics), you've got options: ask the seller to fix it, negotiate the price down, or if it's really bad, walk away. Meanwhile, your solicitor keeps working on searches and contracts. The lender will also review the survey before giving final mortgage approval.",
-  "Can I pull out after exchange?":
-    "Short answer: not really. Exchange is when it gets legally binding. Once you've exchanged contracts and paid your deposit, backing out means you lose that deposit (usually 10% of the purchase price) and could face legal action from the seller. Before exchange? You can walk away anytime, no penalties. That's why it's so important to be 100% sure before you exchange.",
-  "How long does mortgage approval actually take?":
-    "Honestly? It's a bit of a lottery. Some people get it in 2 weeks, others wait 6+ weeks. It depends on your lender's workload, how complicated your finances are, and whether the survey raises any red flags. Pro tip: keep everything stable during this time. Don't change jobs, take out new credit, or make any big purchases. Lenders hate surprises.",
-  "What are searches and why do they matter?":
-    "Searches are basically background checks on the property. Your solicitor will look into things like: Is there a new road planned nearby? Any flood risks? Planning permission issues? Contaminated land? It's tedious stuff, but it protects you from nasty surprises down the line. They usually take 2-4 weeks, and sometimes longer if the local council is slow to respond.",
-};
 
 export function ChatAssistantScreen({
   onBack,
@@ -48,7 +39,9 @@ export function ChatAssistantScreen({
     },
   ]);
   const [inputValue, setInputValue] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -58,39 +51,82 @@ export function ChatAssistantScreen({
     scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = (text: string) => {
-    if (!text.trim()) return;
+  const handleSendMessage = useCallback(
+    async (text: string) => {
+      if (!text.trim() || isLoading) return;
 
-    // Add user message
-    const userMessage: Message = {
-      id: messages.length + 1,
-      sender: "user",
-      text: text,
-      timestamp: new Date(),
-    };
+      // Cancel any in-flight request
+      abortRef.current?.abort();
+      abortRef.current = new AbortController();
 
-    setMessages((prev) => [...prev, userMessage]);
-    setInputValue("");
-
-    // Simulate assistant response
-    setTimeout(() => {
-      const responseText =
-        ASSISTANT_RESPONSES[text] ||
-        "That's a really good question. The UK property process can be confusing, and every situation is a bit different. Generally speaking, your solicitor and mortgage broker are your best sources for specific advice on your case. But I'm here to help you understand what's supposed to happen at each stage. Want to know more about a specific step?";
-
-      const assistantMessage: Message = {
-        id: messages.length + 2,
-        sender: "assistant",
-        text: responseText,
+      const userMessage: Message = {
+        id: Date.now(),
+        sender: "user",
+        text,
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, assistantMessage]);
-    }, 800);
-  };
 
-  const handlePromptClick = (prompt: string) => {
-    handleSendMessage(prompt);
-  };
+      const assistantId = Date.now() + 1;
+      const assistantPlaceholder: Message = {
+        id: assistantId,
+        sender: "assistant",
+        text: "",
+        timestamp: new Date(),
+        isStreaming: true,
+      };
+
+      setMessages((prev) => [...prev, userMessage, assistantPlaceholder]);
+      setInputValue("");
+      setIsLoading(true);
+
+      // Build conversation history for the API (exclude the empty placeholder)
+      const history: ChatMessage[] = [
+        ...messages.map((m) => ({
+          role: m.sender as "user" | "assistant",
+          content: m.text,
+        })),
+        { role: "user", content: text },
+      ];
+
+      try {
+        await sendMessage(
+          history,
+          (token) => {
+            setMessages((prev) =>
+              prev.map((m) =>
+                m.id === assistantId ? { ...m, text: m.text + token } : m
+              )
+            );
+          },
+          abortRef.current.signal
+        );
+      } catch (err) {
+        const isAbort =
+          err instanceof Error && err.name === "AbortError";
+        if (!isAbort) {
+          console.error("[FirstHome chat error]", err);
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === assistantId
+                ? {
+                    ...m,
+                    text: "Sorry, something went wrong. Please check your connection and try again.",
+                  }
+                : m
+            )
+          );
+        }
+      } finally {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === assistantId ? { ...m, isStreaming: false } : m
+          )
+        );
+        setIsLoading(false);
+      }
+    },
+    [messages, isLoading]
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white flex flex-col">
@@ -130,12 +166,25 @@ export function ChatAssistantScreen({
                     : "bg-slate-800/60 border border-slate-700/50 text-gray-200"
                 }`}
               >
-                <p className="text-[15px] leading-relaxed">{message.text}</p>
+                {message.isStreaming && message.text === "" ? (
+                  <span className="flex gap-1 items-center h-[22px]">
+                    <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:0ms]" />
+                    <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:150ms]" />
+                    <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:300ms]" />
+                  </span>
+                ) : (
+                  <p className="text-[15px] leading-relaxed whitespace-pre-wrap">
+                    {message.text}
+                    {message.isStreaming && (
+                      <span className="inline-block w-0.5 h-4 bg-gray-400 ml-0.5 animate-pulse align-middle" />
+                    )}
+                  </p>
+                )}
               </div>
             </div>
           ))}
 
-          {/* Suggested Prompts - Show only at start */}
+          {/* Suggested Prompts — only shown before first user message */}
           {messages.length === 1 && (
             <div className="space-y-3 pt-4">
               <p className="text-sm text-gray-400 text-center">
@@ -145,8 +194,9 @@ export function ChatAssistantScreen({
                 {SUGGESTED_PROMPTS.map((prompt, index) => (
                   <button
                     key={index}
-                    onClick={() => handlePromptClick(prompt)}
-                    className="bg-slate-800/60 border border-slate-700/50 hover:border-blue-500/50 rounded-2xl px-4 py-3 text-sm text-gray-300 text-left transition-colors"
+                    onClick={() => handleSendMessage(prompt)}
+                    disabled={isLoading}
+                    className="bg-slate-800/60 border border-slate-700/50 hover:border-blue-500/50 rounded-2xl px-4 py-3 text-sm text-gray-300 text-left transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {prompt}
                   </button>
@@ -183,12 +233,13 @@ export function ChatAssistantScreen({
                   handleSendMessage(inputValue);
                 }
               }}
-              placeholder="Type your question..."
-              className="min-h-[50px] max-h-[120px] resize-none bg-slate-900/50 border-slate-600 text-white placeholder:text-gray-500 focus:border-blue-500 rounded-2xl"
+              placeholder={isLoading ? "Thinking…" : "Type your question..."}
+              disabled={isLoading}
+              className="min-h-[50px] max-h-[120px] resize-none bg-slate-900/50 border-slate-600 text-white placeholder:text-gray-500 focus:border-blue-500 rounded-2xl disabled:opacity-60"
             />
             <Button
               onClick={() => handleSendMessage(inputValue)}
-              disabled={!inputValue.trim()}
+              disabled={!inputValue.trim() || isLoading}
               className="h-[50px] w-[50px] bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-2xl shadow-lg shadow-blue-500/20 disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
             >
               <Send className="w-5 h-5" />
