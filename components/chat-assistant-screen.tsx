@@ -103,7 +103,10 @@ export function ChatAssistantScreen({
       } catch (err) {
         const isAbort =
           err instanceof Error && err.name === "AbortError";
-        if (!isAbort) {
+        if (isAbort) {
+          // Remove the empty placeholder — the request was cancelled
+          setMessages((prev) => prev.filter((m) => m.id !== assistantId));
+        } else {
           console.error("[FirstHome chat error]", err);
           setMessages((prev) =>
             prev.map((m) =>
@@ -111,6 +114,7 @@ export function ChatAssistantScreen({
                 ? {
                     ...m,
                     text: "Sorry, something went wrong. Please check your connection and try again.",
+                    isStreaming: false,
                   }
                 : m
             )

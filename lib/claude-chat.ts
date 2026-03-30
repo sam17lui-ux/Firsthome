@@ -96,17 +96,19 @@ export async function sendMessage(
         system: SYSTEM_PROMPT,
         tools: [{ type: "web_search_20260209", name: "web_search" }],
         messages: apiMessages,
-      }
+      },
+      { signal }
     );
 
     stream.on("text", onToken);
 
     const finalMsg = await stream.finalMessage();
 
+    // Always preserve the assistant turn so history stays consistent
+    apiMessages.push({ role: "assistant", content: finalMsg.content });
+
     if (finalMsg.stop_reason !== "pause_turn") break;
 
-    // Server-side tool hit its iteration limit — append and continue
-    apiMessages.push({ role: "assistant", content: finalMsg.content });
     continuations++;
   }
 }
